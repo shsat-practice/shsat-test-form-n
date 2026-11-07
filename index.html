@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SHSAT Practice — ELA &amp; Mathematics</title>
+<style>
+:root{
+  --ink:#16202e; --ink-soft:#5a6579; --ink-faint:#8b94a5;
+  --rule:#dde3ec; --canvas:#eef1f6; --card:#fff;
+  --accent:#1f5aa8; --accent-soft:#e9f0fa; --accent-deep:#16416f;
+  --amber:#8a6114; --amber-bg:#fdf3dd; --amber-line:#e7cf9a;
+  --danger:#b42318; --ok:#15803d;
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--canvas);color:var(--ink);font-family:var(--ui);
+     font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.wrap.wide{max-width:1400px}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff}
+.bar-in{max-width:1400px;margin:0 auto;padding:12px 24px;display:flex;
+        align-items:center;justify-content:space-between;gap:14px}
+.brand{font-size:14px;font-weight:600;letter-spacing:.02em}
+.brand span{color:#93a3bb;font-weight:500}
+.count{font-size:14px;color:#c2ccdb;font-variant-numeric:tabular-nums}
+.track{height:3px;background:#0d1725}
+.track i{display:block;height:100%;background:#5b9bd8;transition:width .25s ease}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--rule);border-radius:10px;
+      padding:32px 40px;margin:26px 0}
+h1{font-size:28px;line-height:1.25;margin:0 0 14px}
+h2{font-size:16px;font-weight:700;margin:24px 0 10px}
+.lede{color:var(--ink-soft);margin:0 0 20px}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.qnum{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+      color:var(--ink-faint)}
+.badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+       color:var(--amber);background:var(--amber-bg);border:1px solid var(--amber-line);
+       padding:2px 8px;border-radius:4px}
+
+/* ---------- split layout ---------- */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;
+       align-items:start;margin:22px 0}
+.pane{background:var(--card);border:1px solid var(--rule);border-radius:10px;
+      display:flex;flex-direction:column;min-height:0}
+.pane.passage{position:sticky;top:64px;max-height:calc(100vh - 92px)}
+.pane.qs{padding:28px 32px}
+.ptabs{display:flex;gap:3px;padding:7px 8px 0;border-bottom:1px solid var(--rule);
+       flex-wrap:wrap;flex:none;background:#f7f9fc;border-radius:10px 10px 0 0}
+.ptab{flex:none;border:1px solid transparent;border-bottom:none;background:none;
+      padding:7px 10px;border-radius:7px 7px 0 0;font-size:12px;font-weight:600;
+      color:var(--ink-soft);cursor:pointer;white-space:nowrap}
+.ptab:hover{background:#eef2f8;color:var(--ink)}
+.ptab.on{background:#fff;border-color:var(--rule);color:var(--ink);
+         box-shadow:0 1px 0 #fff;margin-bottom:-1px}
+.ptab.done{color:var(--ink-faint);cursor:not-allowed;opacity:.65}
+.ptab.done:hover{background:none;color:var(--ink-faint)}
+.ptab .lk{font-size:11px;margin-right:4px}
+.pbody{overflow-y:auto;padding:22px 30px 28px;font-family:var(--serif);
+       font-size:16.5px;line-height:1.62;flex:1;min-height:0}
+.pnotice{margin:0 0 14px;padding:9px 13px;border-radius:7px;background:var(--amber-bg);
+         border:1px solid var(--amber-line);font-family:var(--ui);font-size:13px;
+         color:var(--amber);display:flex;justify-content:space-between;gap:10px;
+         align-items:center;flex-wrap:wrap}
+.pnotice button{border:1px solid var(--amber-line);background:#fff;color:var(--amber);
+       border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer}
+
+/* ---------- passage typography ---------- */
+.ptitle{text-align:center;font-size:19px;margin:6px 0 2px;font-family:var(--serif)}
+.byline{text-align:center;font-style:italic;margin-bottom:16px;font-size:15px}
+.phead{font-size:15.5px;font-style:italic;margin:20px 0 6px}
+.pintro{font-style:italic;border-left:3px solid var(--rule);padding-left:14px;
+        margin:6px 0 18px;color:#39445a}
+.ppara{margin:11px 0;display:flex;gap:10px;align-items:flex-start}
+.pnum{flex:none;width:20px;font-weight:700;font-size:13px;color:var(--ink-faint);
+      font-family:var(--ui);padding-top:3px}
+.pcredit,.pnote{font-size:13.5px;color:var(--ink-soft);font-style:italic;margin:12px 0 0}
+.pnote{font-style:normal}
+.stanza{margin:16px 0}
+@media (max-width:900px){.stanza{font-size:14.5px}}
+@media (max-width:620px){.stanza{font-size:12.5px;line-height:1.5}}
+@media (max-width:430px){.stanza{font-size:11px}.pbody{padding-left:16px;padding-right:16px}}
+.pline{display:flex;gap:12px}
+.lnum{flex:none;width:22px;text-align:right;color:var(--ink-faint);font-size:12.5px;
+      font-family:var(--ui);padding-top:3px}
+.pfig{margin:18px 0;text-align:center}
+.pfig img{max-width:100%;height:auto;border:1px solid var(--rule);border-radius:4px}
+
+/* ---------- question body ---------- */
+.stem{font-size:18.5px;line-height:1.58}
+.stem p{margin:0 0 12px}
+.stem ul{margin:10px 0 12px;padding-left:22px}
+.stem blockquote{margin:12px 0;padding:12px 16px;background:#f7f9fc;
+       border-left:3px solid #c3ccd9;border-radius:0 6px 6px 0;font-family:var(--serif);
+       font-size:17px;line-height:1.55}
+.disp{text-align:center;margin:18px 0;font-size:19px}
+.disp.stack{line-height:2}
+.qfig{text-align:center;margin:16px 0}
+.stem svg{max-width:100%;height:auto}
+.grid-in{margin-top:22px}
+.grid-in label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);
+     letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+.grid-in input{width:230px;font-size:24px;font-family:inherit;font-weight:600;
+     padding:11px 14px;border:1.5px solid var(--rule);border-radius:8px;color:var(--ink)}
+.grid-in input:focus{outline:none;border-color:var(--accent);
+     box-shadow:0 0 0 3px rgba(47,111,176,.16)}
+.hint{font-size:13px;color:var(--ink-faint);margin-top:9px}
+.qfig svg{max-width:min(100%,470px);height:auto}
+.frac{display:inline-block;vertical-align:middle;text-align:center;
+      font-size:.92em;line-height:1.15;margin:0 2px}
+.frac .num{display:block;padding:0 3px}
+.frac .den{display:block;border-top:1px solid currentColor;padding:0 3px}
+.ovl{border-top:1px solid currentColor}
+sup{font-size:.72em;vertical-align:super;line-height:0}
+sub{font-size:.72em;vertical-align:sub;line-height:0}
+.tbl-title{text-align:center;font-size:14.5px;margin-bottom:7px;font-weight:600}
+table.data{border-collapse:collapse;margin:0 auto 14px}
+table.data th,table.data td{border:1px solid var(--ink);padding:5px 14px;
+      font-size:15px;text-align:center}
+
+/* ---------- choices ---------- */
+.choices{margin-top:22px;display:flex;flex-direction:column;gap:9px}
+.choice{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;
+        background:#fff;border:1.5px solid var(--rule);border-radius:8px;
+        padding:13px 16px;cursor:pointer;font-size:17.5px;line-height:1.5;color:var(--ink);
+        transition:border-color .12s,background .12s}
+.choice:hover{border-color:#b9c4d4;background:#fafbfd}
+.choice .ltr{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid #c3ccd9;
+        display:flex;align-items:center;justify-content:center;font-size:13.5px;
+        font-weight:700;color:var(--ink-soft);margin-top:1px}
+.choice.on{border-color:var(--accent);background:var(--accent-soft)}
+.choice.on .ltr{background:var(--accent);border-color:var(--accent);color:#fff}
+.choice:focus-visible{outline:3px solid #9dc3ec;outline-offset:2px}
+
+/* ---------- actions ---------- */
+.actions{display:flex;align-items:center;justify-content:space-between;gap:14px;
+      margin-top:26px;padding-top:18px;border-top:1px solid var(--rule)}
+.note{font-size:13px;color:var(--ink-faint);max-width:380px}
+.btns{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:none;border-radius:8px;padding:13px 24px;font-size:16px;font-weight:600;
+     cursor:pointer;transition:background .12s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-deep)}
+.arrow.back{background:#fff;color:var(--ink-soft);border:1.5px solid var(--rule)}
+.arrow.back:hover{background:#f3f5f9;color:var(--ink);border-color:var(--ink-soft)}
+.setpos{font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);border-left:1px solid var(--rule);padding-left:10px}
+@media (max-width:760px){.setpos{border-left:0;padding-left:0}}
+.btn-ghost{background:none;color:var(--ink-soft);border:1.5px solid var(--rule);
+     padding:12px 18px}
+.btn-ghost:hover{background:#f3f5f9;color:var(--ink)}
+.btn:focus-visible{outline:3px solid #9dc3ec;outline-offset:2px}
+.arrow{width:60px;height:60px;border-radius:50%;border:none;background:var(--accent);
+     color:#fff;font-size:27px;line-height:1;cursor:pointer;display:flex;
+     align-items:center;justify-content:center;transition:background .12s,transform .12s}
+.arrow:hover{background:var(--accent-deep);transform:translateX(2px)}
+.arrow.finish{background:var(--ok)}
+.arrow.finish:hover{background:#136c34;transform:none}
+.arrow:focus-visible{outline:3px solid #9dc3ec;outline-offset:3px}
+
+/* ---------- start / results ---------- */
+.rules{list-style:none;padding:0;margin:0 0 6px}
+.rules li{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--rule);
+      font-size:16px;color:var(--ink-soft)}
+.rules li:last-child{border-bottom:none}
+.rules b{color:var(--ink);font-weight:650;flex:none;width:150px}
+.picks{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 6px}
+.pick{flex:1;min-width:210px;text-align:left;background:#fff;border:1.5px solid var(--rule);
+      border-radius:10px;padding:16px 18px;cursor:pointer;transition:border-color .12s,background .12s}
+.pick:hover{border-color:var(--accent);background:var(--accent-soft)}
+.pick b{display:block;font-size:17px;margin-bottom:3px}
+.pick span{font-size:13.5px;color:var(--ink-faint)}
+.stats{display:flex;gap:34px;margin:6px 0 22px;flex-wrap:wrap}
+.stat .k{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint)}
+.stat .v{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+table.sheet{width:100%;border-collapse:collapse;margin-top:6px}
+table.sheet th{text-align:left;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;
+      color:var(--ink-faint);border-bottom:1.5px solid var(--rule);padding:8px 10px}
+table.sheet td{border-bottom:1px solid #eef1f6;padding:8px 10px;font-size:15.5px;
+      font-variant-numeric:tabular-nums}
+table.sheet td.q{color:var(--ink-faint);width:52px}
+.blank{color:var(--danger);font-weight:650}
+.right{color:var(--ok);font-weight:650}
+.wrong{color:var(--danger);font-weight:650}
+.missed{font-size:16.5px;font-weight:600;color:var(--danger);margin:0 0 4px;
+      font-variant-numeric:tabular-nums;line-height:1.6}
+.sheetgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 26px}
+@media(max-width:800px){.sheetgrid{grid-template-columns:1fr}}
+
+/* ---------- dialog / print ---------- */
+.modal{position:fixed;inset:0;z-index:60;background:rgba(16,24,38,.55);
+      display:flex;align-items:center;justify-content:center;padding:20px}
+.modal[hidden]{display:none}
+.modal-card{background:#fff;border-radius:12px;padding:26px 28px;max-width:430px;width:100%;
+      box-shadow:0 18px 50px rgba(10,18,32,.3)}
+.modal-card h3{margin:0 0 8px;font-size:18px}
+.modal-card p{margin:0 0 20px;color:var(--ink-soft);font-size:15px}
+.modal-btns{display:flex;justify-content:flex-end;gap:10px}
+.printhead{border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:18px}
+.ph-title{font-size:15px;font-weight:700}
+.ph-meta{font-size:13px;color:var(--ink-soft);margin-top:3px}
+.namefield{display:flex;align-items:center;gap:10px;margin:0 0 14px;flex-wrap:wrap}
+.namefield label{font-size:13px;font-weight:600;color:var(--ink-soft);width:104px}
+.namefield input{flex:1;min-width:210px;max-width:300px;font-family:var(--ui);font-size:15px;
+      padding:8px 12px;border:1.5px solid #c3ccd9;border-radius:8px}
+.namefield input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.tip{font-size:12.5px;color:var(--ink-faint);margin-top:10px}
+
+@media(max-width:900px){
+  .split{grid-template-columns:1fr}
+  .pane.passage{position:static;max-height:52vh}
+  .pane.qs{padding:22px 20px}
+}
+@media(max-width:640px){
+  .card{padding:22px 18px}
+  .bar-in{padding:9px 14px}.wrap{padding:0 12px}
+  h1{font-size:22px}.stem,.choice{font-size:16.5px}
+  .actions{flex-direction:column;align-items:stretch}
+  .btns{justify-content:space-between}.note{max-width:none}
+  .arrow{width:54px;height:54px;font-size:25px}
+  .rules b{width:auto}
+  .rules li{flex-direction:column;gap:2px}
+}
+@media print{
+  @page{margin:14mm}
+  .bar,.track,.actions,.noprint,.modal,.namefield{display:none!important}
+  body{background:#fff;font-size:12px}
+  .wrap{max-width:none;padding:0}
+  .card{border:none;margin:0;padding:0;border-radius:0}
+  h1{font-size:18px;margin-bottom:6px}
+  h2{font-size:13px;margin:14px 0 6px}
+  .stats{gap:24px;margin:4px 0 12px}.stat .v{font-size:19px}
+  .sheetgrid{gap:0 18px}
+  table.sheet td,table.sheet th{padding:2.5px 7px;font-size:11px}
+  tr{page-break-inside:avoid}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---------- content helpers ---------- */
+.stanzagap{height:14px}
+.tw{margin:16px 0;text-align:center}
+.tt{font-family:var(--ui);font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:7px}
+table.data{border-collapse:collapse;margin:0 auto;font-size:16px}
+table.data th,table.data td{border:1px solid #b9c4d1;padding:6px 16px;text-align:center}
+table.data th{background:#eef2f7;font-weight:600}
+p.ent{font-size:15.5px;color:var(--ink-soft);margin:10px 0 4px}
+.rep{border-top:1.4px solid currentColor;padding:0 1px}
+.rad{border-top:1.1px solid currentColor;padding:0 2px 0 1px;margin-left:-1px}
+
+/* ---------- answer eliminator ---------- */
+.pickwrap{display:flex;align-items:flex-start;gap:13px;flex:1;text-align:left;
+  background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer}
+.crow{display:flex;align-items:flex-start;gap:13px;width:100%;
+  border:1.5px solid var(--rule);border-radius:11px;padding:15px 17px;background:#fff;
+  position:relative}
+.crow:hover{border-color:#b9c4d4;background:#fafbfd}
+.crow.on{border-color:var(--accent);background:var(--accent-soft)}
+.crow.on .ltr{background:var(--accent);border-color:var(--accent);color:#fff}
+.crow .ct{flex:1}
+.elim{flex:none;width:30px;height:30px;border-radius:50%;border:1.4px solid var(--rule);
+      background:#fff;color:var(--ink-faint);font-family:var(--ui);font-size:15px;
+      line-height:1;cursor:pointer;align-self:center;margin-left:10px;padding:0}
+.elim:hover{border-color:#b42318;color:#b42318;background:#fdf3f2}
+.crow.struck .ct,.crow.struck .ltr{text-decoration:line-through;opacity:.42}
+.crow.struck .elim{border-color:#b42318;color:#b42318;background:#fdf3f2}
+.elimhint{font-size:13.5px;color:var(--ink-faint);font-family:var(--ui);margin:10px 0 0}
+.crow .box{flex:none;width:21px;height:21px;border:1.7px solid var(--rule);border-radius:4px;
+  background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;
+  color:#fff;align-self:center}
+.crow.on .box{background:var(--accent);border-color:var(--accent)}
+.pickmsg{font-family:var(--ui);font-size:13.5px;margin-top:10px;color:var(--ink-soft)}
+.pickmsg.full{color:#15803d}
+
+/* ---------- tech-enhanced items ---------- */
+table.rt{border-collapse:collapse;margin:16px auto 4px;font-size:16px;min-width:74%}
+table.rt th,table.rt td{border:1px solid #b9c4d1;padding:10px 14px;text-align:center}
+table.rt th{background:#eef2f7;font-weight:600;font-family:var(--ui);font-size:14px}
+table.rt td.lab{text-align:left;font-size:17px}
+.rdo{width:21px;height:21px;border:1.7px solid var(--rule);border-radius:50%;background:#fff;
+     cursor:pointer;display:inline-block;padding:0}
+.rdo.on{border-color:var(--accent);border-width:6px}
+.ddline{margin:14px 0;font-size:18px;line-height:1.7}
+.ddline select{font:inherit;font-size:16px;padding:5px 8px;border:1.5px solid var(--rule);
+     border-radius:6px;background:#fff;color:var(--ink);margin:0 4px}
+.tray{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0 6px}
+.tok{font-family:var(--ui);font-size:15px;font-weight:600;color:var(--accent);
+     border:1.5px solid var(--accent);border-radius:7px;padding:7px 15px;background:#fff;
+     cursor:pointer}
+.tok.held{background:var(--accent);color:#fff}
+.tok.used{opacity:.3;cursor:default}
+.dropcell{min-width:96px;height:38px;border:1.6px dashed #9fb0c4;border-radius:6px;
+     background:#fbfcfe;cursor:pointer;display:flex;align-items:center;justify-content:center;
+     font-weight:600;color:var(--accent);margin:0 auto}
+.dropcell.filled{border-style:solid;border-color:var(--accent);background:#eef4fb}
+.dropcell.target{border-color:var(--accent);background:#e8f0fa}
+.exprbox{width:100%!important;font-size:22px;font-family:var(--serif);padding:12px 14px;
+     border:1.5px solid var(--rule);border-radius:8px;color:var(--ink);box-sizing:border-box}
+.pal{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:12px;
+     border:1.5px solid var(--accent);border-radius:9px;padding:9px;background:#f7f9fc}
+.pal button{font-family:var(--serif);font-size:18px;padding:9px 0;background:#eef2f7;
+     border:1px solid #d3dbe5;border-radius:6px;cursor:pointer;color:var(--ink)}
+.pal button.util{font-family:var(--ui);font-size:14px;background:#fff}
+@media (max-width:620px){.pal{grid-template-columns:repeat(5,1fr)}}
+
+/* ---------- start screen ---------- */
+.paper{margin:16px 0 0;padding:12px 15px;border-radius:8px;background:var(--amber-bg);
+   border:1px solid var(--amber-line);font-family:var(--ui);font-size:14.5px;
+   line-height:1.5;color:#6b4e14}
+.paper b{color:#5a400c}
+.backlink{background:none;border:0;padding:0;font-family:var(--ui);font-size:14px;
+   color:var(--accent);cursor:pointer;margin-top:18px}
+
+/* ---------- highlighter ---------- */
+mark.hl{background:#ffe6a0;color:inherit;border-radius:2px;padding:.5px 0;cursor:pointer;
+  box-shadow:0 0 0 1px rgba(201,154,22,.3)}
+mark.hl:hover{background:#ffd978}
+[data-hl]{-webkit-user-select:text;user-select:text}
+.hlbar{position:absolute;z-index:70}
+.hlbar button{font-family:var(--ui);font-size:12.5px;font-weight:600;color:#fff;
+  background:#1f2b3d;border:0;border-radius:7px;padding:7px 12px;cursor:pointer;
+  box-shadow:0 5px 16px rgba(16,24,40,.3);white-space:nowrap}
+.hlbar button:hover{background:#2d3d55}
+.hlhint{font-family:var(--ui);font-size:12px;color:var(--ink-soft);margin:10px 0 0}
+</style>
+</head>
+<body>
+<header class="bar" id="bar" hidden>
+  <div class="bar-in">
+    <div class="brand">SHSAT Practice <span id="secname"></span></div>
+    <div class="count" id="count"></div>
+  </div>
+</header>
+<div class="track" id="track" hidden><i id="trackbar" style="width:0%"></i></div>
+<main id="app"></main>
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-h">
+  <div class="modal-card">
+    <h3 id="modal-h">Are you sure?</h3>
+    <p id="modal-p"></p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" id="modal-no">Cancel</button>
+      <button class="btn btn-primary" id="modal-yes">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var DATA = {"sections": [{"key": "ela", "label": "English Language Arts", "items": [{"sec": "ela", "n": 1, "type": "mc", "stem": "How does paragraph 9 fit into the overall structure of the excerpt?", "lead": null, "quote": null, "opts": ["It establishes that this is a meeting between two satiric adversaries.", "It illustrates the calmness of Holmes in the face of possible danger.", "It highlights the somewhat unseasonable weather.", "It describes the degree of Dr. Roylott&rsquo;s anger."], "text": "speckled", "grp": "speckled", "fig": null, "ai": 1}, {"sec": "ela", "n": 2, "type": "mc", "stem": "Which statement best describes how his stepdaughter&rsquo;s visit to Holmes affects Dr. Roylott?", "lead": null, "quote": null, "opts": ["It leads him to try to frighten Holmes into staying out of his affairs.", "It leads him to physically attack both Holmes and Dr. Watson.", "It leads him to deny the accusations that his stepdaughter has made against him.", "It leads him to warn Holmes that his stepdaughter will suffer if Holmes continues to investigate."], "text": "speckled", "grp": "speckled", "fig": null, "ai": 0}, {"sec": "ela", "n": 3, "type": "mc", "stem": "The words &ldquo;scoundrel&rdquo; and &ldquo;meddler&rdquo; in paragraph 10 contribute to the meaning of the paragraph by", "lead": null, "quote": null, "opts": ["conveying that Dr. Roylott is a violent, unhinged person who does not care whom he attacks.", "underlining that Dr. Roylott knows enough about Holmes to view him as a threat.", "emphasizing that Dr. Roylott is taking care not to come across as potentially guilty.", "revealing that Dr. Roylott knows exactly who Holmes is and what he does for a living."], "text": "speckled", "grp": "speckled", "fig": null, "ai": 1}, {"sec": "ela", "n": 4, "type": "mc", "stem": "How does the author&rsquo;s use of various insults in paragraphs 10&ndash;14 contribute to the development of ideas in the passage?", "lead": null, "quote": null, "opts": ["They reveal that Dr. Roylott will insult every man that he meets.", "They illustrate that Holmes is calm until his profession is called into question.", "They demonstrate that Dr. Roylott is trying and failing to make Holmes afraid of him.", "They highlight the ever-increasing outrage that Holmes feels."], "text": "speckled", "grp": "speckled", "fig": null, "ai": 2}, {"sec": "ela", "n": 5, "type": "mc", "stem": "How does paragraph 17 fit into the overall structure of the excerpt?", "lead": null, "quote": null, "opts": ["It introduces a shift from the perspective of Dr. Roylott to that of Dr. Watson.", "It emphasizes that neither Dr. Roylott nor his stepdaughter can intimidate Holmes.", "It offers a practical explanation for why Holmes is not afraid of Dr. Roylott.", "It indicates that the conversation between Holmes and Dr. Roylott is now over."], "text": "speckled", "grp": "speckled", "fig": null, "ai": 3}, {"sec": "ela", "n": 6, "type": "mc", "stem": "Which sentence best supports the idea that Holmes is confident in his ability to defend himself against Dr. Roylott?", "lead": null, "quote": null, "opts": ["&ldquo;&lsquo;Pray take a seat.&rsquo;&rdquo; (paragraph 5)", "&ldquo;Holmes chuckled heartily. &lsquo;Your conversation is most entertaining,&rsquo; said he.&rdquo; (paragraph 15)", "&ldquo;&lsquo;He seems a very amiable person,&rsquo; said Holmes, laughing.&rdquo; (paragraph 18)", "&ldquo;&lsquo;. . . if he had remained I might have shown him that my grip was not much more feeble than his own.&rsquo;&rdquo; (paragraph 18)"], "text": "speckled", "grp": "speckled", "fig": null, "ai": 3}, {"sec": "ela", "n": 7, "type": "mc", "stem": "Which statement best describes the central idea of the passage?", "lead": null, "quote": null, "opts": ["The armor used in the medieval era was closely related to the types of weapons used in warfare.", "Medieval mail armor has a long history, including a complicated production process and some modern uses.", "The revival of Roman arms technology in the medieval era enabled the use of chain mail to spread.", "Body armor and its production process have continued to evolve since Roman times."], "text": "chainmail", "grp": "chainmail", "fig": null, "ai": 1}, {"sec": "ela", "n": 8, "type": "mc", "stem": "In paragraph 3, how does the word &ldquo;master&rdquo; contribute to the meaning of the paragraph?", "lead": null, "quote": null, "opts": ["It emphasizes that the maillers owned the armor they made.", "It indicates that the makers of mail shirts were elders.", "It defines the maillers as teachers.", "It describes the makers of mail shirts as experts."], "text": "chainmail", "grp": "chainmail", "fig": null, "ai": 3}, {"sec": "ela", "n": 9, "type": "mc", "stem": "How does paragraph 3 fit into the overall structure of the passage?", "lead": null, "quote": null, "opts": ["It describes the labor-intensive process of making mail, helping to explain why the armor was so costly.", "It elaborates on the advantages of chain mail against various types of weapons on the medieval battlefield.", "It highlights how the development of weaponry affects offensive and defensive military technology over time.", "It contrasts the initial exclusivity of chain mail to wealthy medieval elites with its later spread to the lower classes."], "text": "chainmail", "grp": "chainmail", "fig": null, "ai": 0}, {"sec": "ela", "n": 10, "type": "mc", "stem": "What is the most likely reason chain mail was not commonly used in the ancient Roman era?", "lead": null, "quote": null, "opts": ["Ancient Roman &ldquo;linked mail armor&rdquo; was less effective than the armor made in the fourteenth century.", "The improved stabbing and piercing weapons used by Rome&rsquo;s military opponents made flexible mail armor impractical.", "Armor made from segmented steel plates was unsuitable for wear by Roman cavalry troops.", "The segmented breastplate was a more practical form of protection for Roman infantry than flexible mail armor."], "text": "chainmail", "grp": "chainmail", "fig": null, "ai": 3}, {"sec": "ela", "n": 11, "type": "mc", "stem": "Which sentence best supports the idea that chain mail became less effective as a form of defense on the battlefield?", "lead": null, "quote": null, "opts": ["&ldquo;It combined the flexibility and suppleness of cloth with the impact-absorbing mass and cut resistance of rigid metal plates.&rdquo; (paragraph 2)", "&ldquo;Moreover, when struck with a blunt object, the links transfer much of the force through the mass of the garment, absorbing a significant amount of impact instead of allowing it to pass to the soft tissues of the wearer beneath.&rdquo; (paragraph 2)", "&ldquo;For the nobility, the need for greater protection spurred the development of armors revolving around cleverly articulated rigid steel plates instead.&rdquo; (paragraph 4)", "&ldquo;Today, in addition to traditional maillers, modern maillers produce chain mail with premade wire, electric motors, and pneumatic tools for costumes for Renaissance festivals, movies, theme parks, medieval restaurants, and fantasy hobbyists.&rdquo; (paragraph 5)"], "text": "chainmail", "grp": "chainmail", "fig": null, "ai": 2}, {"sec": "ela", "n": 12, "type": "mc", "stem": "In paragraph 4, the idea that chain mail was once considered very valuable is illustrated mainly through the", "lead": null, "quote": null, "opts": ["tedious, labor-intensive process for creating mail armor.", "use of chain armor by the peasant class.", "superior durability of medieval mail armor.", "quick removal and reuse of armor from fallen soldiers."], "text": "chainmail", "grp": "chainmail", "fig": null, "ai": 3}, {"sec": "ela", "n": 13, "type": "mc", "stem": "With which statement would the author of this passage most likely agree?", "lead": null, "quote": null, "opts": ["Linked-metal armor represented a practical solution to a technological need in a particular historical era.", "Military technologies in the era of steel hand weapons succeeded primarily because of the existence of an adequate network of skilled craftsmen to support them.", "The availability of practical mail armor was limited mainly to the fourteenth century.", "Linked-metal armor was of such limited usefulness that it became obsolete as soon as the superior technology of articulated metal plates became widespread."], "text": "chainmail", "grp": "chainmail", "fig": null, "ai": 0}, {"sec": "ela", "n": 14, "type": "mc", "stem": "According to the passage, the Alvarez theory that the iridium layer was deposited by a meteorite rather than by volcanic action is supported by evidence that", "lead": null, "quote": null, "opts": ["proves that the Yucatan crater was created by a meteor strike.", "describes the only way in which a large enough dust and rock cloud could be generated to disrupt the food chain.", "indicates that iridium is evenly distributed in sediments worldwide.", "shows that geologists agree that iridium is rare on the surface of the Earth."], "text": "asteroid", "grp": "asteroid", "fig": null, "ai": 2}, {"sec": "ela", "n": 15, "type": "mc", "stem": "In paragraph 4, the author notes that &ldquo;Neither Luis nor Walter Alvarez was a paleontologist&rdquo; mainly to suggest that", "lead": null, "quote": null, "opts": ["the Alvarezes were not qualified to analyze the iridium samples on which their theory was based.", "the Alvarez theory was eventually rejected because neither scientist had studied dinosaurs.", "paleontologists doubted the theory partly because it came from scientists outside their field who claimed to have solved a long-standing problem.", "paleontologists had already considered and rejected the possibility of a meteorite strike."], "text": "asteroid", "grp": "asteroid", "fig": null, "ai": 2}, {"sec": "ela", "n": 16, "type": "mc", "stem": "The author mentions the global food chain in paragraph 2 in order to", "lead": null, "quote": null, "opts": ["refute the theory that an epidemic was responsible for dinosaur extinction.", "illustrate the importance of a clean atmosphere for life on Earth.", "support the contention that dinosaurs were primarily plant-eaters.", "explain how the cloud of dust caused the extinction of dinosaurs."], "text": "asteroid", "grp": "asteroid", "fig": null, "ai": 3}, {"sec": "ela", "n": 17, "type": "mc", "stem": "What is the most likely reason the discovery of a layer of iridium in geologic sediments was considered unusual?", "lead": null, "quote": null, "opts": ["Iridium had never been detected there before.", "Iridium is normally quite scarce at the Earth&rsquo;s surface.", "Iridium only occurs in meteoric craters.", "Iridium is normally found only deep within the Earth&rsquo;s core."], "text": "asteroid", "grp": "asteroid", "fig": null, "ai": 1}, {"sec": "ela", "n": 18, "type": "mc", "stem": "The phrase &ldquo;coupled with&rdquo; conveys the idea that the lack of plants", "lead": "Read this sentence from paragraph 2.", "quote": "The lack of plants as a food source, coupled with a significant drop in temperature, resulted in the extinction of the dinosaurs.", "opts": ["resulted from the meteorite impact.", "combined with falling temperatures to cause dinosaur extinction.", "was less important than the drop in temperature in causing the extinction.", "caused the dinosaurs to go extinct due to starvation."], "text": "asteroid", "grp": "asteroid", "fig": null, "ai": 1}, {"sec": "ela", "n": 19, "type": "mc", "stem": "Which sentence best supports the idea that paleontologists initially had reason to be critical of the Alvarez theory?", "lead": null, "quote": null, "opts": ["&ldquo;Although various explanations for this disappearance have been offered, ranging from an epidemic to a sudden, catastrophic drop in temperature, no theory has yet been conclusively proven.&rdquo; (paragraph 1)", "&ldquo;His research team discovered that a thin layer of the metal iridium had been deposited all over the world at approximately the time the dinosaurs died out.&rdquo; (paragraph 3)", "&ldquo;[T]he &lsquo;doomsday&rsquo; meteorite would have had to be about 5 miles in diameter, and its impact would have formed a crater perhaps a hundred miles wide.&rdquo; (paragraph 4)", "&ldquo;New deepwater samples of melted rock from the crater itself were recently analyzed by an advanced dating process, however, and were found to be 64.98 million years old.&rdquo; (paragraph 5)"], "text": "asteroid", "grp": "asteroid", "fig": null, "ai": 2}, {"sec": "ela", "n": 20, "type": "mc", "stem": "Paragraph 5 contributes to the development of the central idea of the passage by", "lead": null, "quote": null, "opts": ["describing evidence that helped convince many scientists that the Alvarez theory was correct.", "revealing that the impact crater was far older than 65 million years.", "rejecting the majority opinion of paleontologists.", "explaining why the oil geologists who found the crater in 1981 did not connect it to the dinosaurs."], "text": "asteroid", "grp": "asteroid", "fig": null, "ai": 0}, {"sec": "ela", "n": 21, "type": "mc", "stem": "Which statement best describes the central idea of the passage?", "lead": null, "quote": null, "opts": ["Birds rely mainly on colorful plumage both to attract mates and to identify members of their own species.", "The mating activities of birds involve several different types of behaviors and approaches.", "Bird calls provide important migratory directions in addition to playing a key role in courtship.", "A &ldquo;pair bond&rdquo; generally lasts at least as long as it takes the two birds to create a nest, if not longer."], "text": "birds", "grp": "birds", "fig": null, "ai": 1}, {"sec": "ela", "n": 22, "type": "mc", "stem": "Which sentence best supports the idea that male bird calls help a female find a suitable mate before mating takes place?", "lead": null, "quote": null, "opts": ["&ldquo;Later, after mating has taken place, the note patterns of a particular male&rsquo;s song enable the nesting female to continue to identify her partner.&rdquo; (paragraph 4)", "&ldquo;Males perch on tall trees and sing high-pitched, piercing notes to announce that the surrounding area is their territory.&rdquo; (paragraph 5)", "&ldquo;Identification checks allow birds to ensure that they are mating with members of their own species.&rdquo; (paragraph 1)", "&ldquo;The males of her species identify themselves by their singing and communicate to her that they are in breeding condition.&rdquo; (paragraph 4)"], "text": "birds", "grp": "birds", "fig": null, "ai": 3}, {"sec": "ela", "n": 23, "type": "mc", "stem": "The example of whooping cranes and trumpeter swans in paragraph 3 primarily serves to", "lead": null, "quote": null, "opts": ["demonstrate that aggression is the principal means by which birds establish pair bonds.", "explain how some birds use distinctive movements to identify members of competing species.", "illustrate how courtship rituals can involve coordinated participation by both males and females.", "suggest that courtship displays are most elaborate among birds whose males and females have similar plumage."], "text": "birds", "grp": "birds", "fig": null, "ai": 2}, {"sec": "ela", "n": 24, "type": "mc", "stem": "Based on paragraph 4, a male&rsquo;s singing most likely helps a female bird", "lead": null, "quote": null, "opts": ["find a male of her own species that is ready to mate.", "recognize her own chicks by the unique calls they make after hatching.", "learn the route to her breeding region from males that have already arrived there.", "compare the plumage of several males before choosing a partner."], "text": "birds", "grp": "birds", "fig": null, "ai": 0}, {"sec": "ela", "n": 25, "type": "mc", "stem": "How do paragraphs 5 and 6 contribute to the development of ideas in the passage?", "lead": null, "quote": null, "opts": ["They argue that common North American birds have more elaborate courtship rituals than exotic species such as the bird of paradise.", "They shift the focus of the passage from courtship to the care of young birds.", "They contrast birds that defend a territory with birds that rely on colorful plumage to attract mates.", "They show that the identification and courtship behaviors described earlier can be observed in common birds, not just in exotic ones."], "text": "birds", "grp": "birds", "fig": null, "ai": 3}, {"sec": "ela", "n": 26, "type": "mc", "stem": "Based on paragraphs 5 and 6, which statement best describes a difference between the courtship behaviors of the northern cardinal and the American goldfinch?", "lead": null, "quote": null, "opts": ["The male cardinal courts the female by feeding her, while the male goldfinch proves his fitness by matching the female&rsquo;s movements in flight.", "Cardinal pairs form lasting bonds, while goldfinch pairs separate as soon as their eggs are laid.", "The male cardinal attracts a female mainly through song, while the male goldfinch relies on his bright plumage.", "The male cardinal defends a territory, while the male goldfinch does not establish a territory at all."], "text": "birds", "grp": "birds", "fig": null, "ai": 0}, {"sec": "ela", "n": 27, "type": "mc", "stem": "How does the Venn diagram contribute to the development of the topic of the passage?", "lead": null, "quote": null, "opts": ["It emphasizes that the males of some avian species can use a variety of behaviors to attract a mate.", "It shows that birds are more likely to use a single courtship behavior, rather than multiple techniques.", "It indicates that some species of birds may use more than one &ldquo;identification check&rdquo; behavior.", "It tells how male birds of paradise both develop distinctive plumage and perform a dance to attract females."], "text": "birds", "grp": "birds", "fig": null, "ai": 2}, {"sec": "ela", "n": 28, "type": "mc", "stem": "Which statement best expresses the central idea of the poem?", "lead": null, "quote": null, "opts": ["The passing of time gradually changes familiar things until they become unrecognizable.", "Although nature undergoes dramatic changes, its recurring cycles bring opportunities for renewal.", "The beauty of nature is most apparent when its periods of growth are contrasted with its periods of decline.", "Observing nature closely allows people to anticipate changes that might otherwise seem unexpected."], "text": "poem", "grp": "poem", "fig": null, "ai": 1}, {"sec": "ela", "n": 29, "type": "mc", "stem": "The personification in lines 1&ndash;3 suggests that the tree", "lead": null, "quote": null, "opts": ["is a welcome sight to the speaker.", "is a strong but menacing presence.", "is a representation of the speaker&rsquo;s actual neighbor.", "is annoying the speaker by banging against the window."], "text": "poem", "grp": "poem", "fig": null, "ai": 0}, {"sec": "ela", "n": 30, "type": "mc", "stem": "How does the second stanza (lines 8&ndash;14) contribute to the poem&rsquo;s larger portrayal of the seasons?", "lead": null, "quote": null, "opts": ["It suggests that the tree is most beautiful in the spring, when it is full of birds and blossoms.", "It foreshadows the decline in the speaker&rsquo;s mood once spring ends and the birds leave.", "It presents the first in a series of seasonal portraits, each showing the tree with its own distinct sights and sounds.", "It suggests that the people and animals that interact with the tree inevitably cause it harm."], "text": "poem", "grp": "poem", "fig": null, "ai": 2}, {"sec": "ela", "n": 31, "type": "mc", "stem": "The figurative language in these lines conveys", "lead": "Read lines 19&ndash;21 from the poem.", "quote": "The relief of a gentle breeze whispers secrets through the leaves<br>And children, playing in the streets, follow the sound<br>And find shelter in the coolness of the shade.", "opts": ["the belief of the neighborhood inhabitants that the tree is mysterious.", "that the tree depends on people in order to survive the heat of summer.", "how the tree is only useful to the inhabitants of the neighborhood when it is hot outside.", "that there is a feeling of connection between the tree and the inhabitants of the neighborhood."], "text": "poem", "grp": "poem", "fig": null, "ai": 3}, {"sec": "ela", "n": 32, "type": "mc", "stem": "The comparison in lines 22&ndash;23 of the poem is used to convey", "lead": null, "quote": null, "opts": ["the harm that the colder weather has already begun to do to the tree&rsquo;s leaves.", "the speed with which the tree sheds the last of its summer green.", "the vividness of the colors that overtake the leaves as the season turns.", "the speaker&rsquo;s uneasiness about the barren winter still to come."], "text": "poem", "grp": "poem", "fig": null, "ai": 2}, {"sec": "ela", "n": 33, "type": "mc", "stem": "How does the word choice in these lines impact the mood of the poem?", "lead": "Read lines 28&ndash;29 from the poem.", "quote": "Squirrels race up and down the trunk, stashing away<br>Treasures in preparation for the growing chill.", "opts": ["by lending a note of warmth to a stanza otherwise occupied with loss", "by making the squirrels&rsquo; preparations seem frantic as the cold closes in", "by suggesting that the animals value the tree more than the speaker does", "by implying that what the tree still has to offer is nearly used up"], "text": "poem", "grp": "poem", "fig": null, "ai": 0}, {"sec": "ela", "n": 34, "type": "mc", "stem": "How does the imagery in lines 31&ndash;32 contribute to the poem&rsquo;s portrayal of winter?", "lead": null, "quote": null, "opts": ["It creates a stark, unsettling image that contrasts with the liveliness of the earlier seasons.", "It emphasizes the tree&rsquo;s vulnerability by comparing its bare branches to fragile objects.", "It depicts the tree as restless, suggesting that its branches are struggling against the cold.", "It conveys the speaker&rsquo;s disappointment that the tree no longer provides shelter for neighborhood animals."], "text": "poem", "grp": "poem", "fig": null, "ai": 0}, {"sec": "ela", "n": 35, "type": "mc", "stem": "What does the bud in line 36 represent?", "lead": null, "quote": null, "opts": ["proof that the tree has survived a winter harsher than the ones before it", "the return of a cycle the speaker has come to count on each year", "the speaker&rsquo;s wish that the seasons would stop changing", "the fragility of new growth in the face of the cold still to come"], "text": "poem", "grp": "poem", "fig": null, "ai": 1}, {"sec": "ela", "n": 36, "type": "mc", "stem": "Which statement best expresses the central argument developed throughout the passage?", "lead": null, "quote": null, "opts": ["The nation&rsquo;s rapid economic growth has depended on exploiting natural resources, making further development increasingly difficult as those resources diminish.", "The nation&rsquo;s greatest responsibility is to restore the natural resources that have already been depleted through generations of careless use.", "Because the nation&rsquo;s prosperity depends on natural resources that are being depleted, Americans must use those resources wisely to preserve prosperity for future generations.", "Although the nation&rsquo;s resources are diminishing, its history of economic growth demonstrates that Americans can overcome these challenges through continued development."], "text": "roosevelt", "grp": "roosevelt", "fig": null, "ai": 2}, {"sec": "ela", "n": 37, "type": "mc", "stem": "How does paragraph 2 develop the argument introduced in paragraph 1?", "lead": null, "quote": null, "opts": ["It qualifies the claim that natural resources are being exhausted by identifying ways in which agricultural land can still be expanded.", "It explains how the nation&rsquo;s early assumptions about its resources contributed to the economic prosperity described in paragraph 1.", "It shifts the discussion from the importance of natural resources to the technological developments that have made those resources more accessible.", "It illustrates the exhaustion of natural resources by contrasting the abundance Americans once believed they possessed with the shortages they now face."], "text": "roosevelt", "grp": "roosevelt", "fig": null, "ai": 3}, {"sec": "ela", "n": 38, "type": "mc", "stem": "In paragraph 3, the speaker compares the increase in coal consumption from 1906 to 1907 with the total coal consumption in 1876 primarily to emphasize that", "lead": null, "quote": null, "opts": ["the growth of the nation&rsquo;s industries has made coal an increasingly important source of its prosperity.", "the nation&rsquo;s demand for natural resources has accelerated dramatically, reinforcing concerns about their eventual exhaustion.", "the nation&rsquo;s economic achievements have depended more heavily on coal than on its other natural resources.", "the rapid growth of coal consumption illustrates how improvements in productivity can compensate for diminishing supplies."], "text": "roosevelt", "grp": "roosevelt", "fig": null, "ai": 1}, {"sec": "ela", "n": 39, "type": "mc", "stem": "Which sentence best supports the idea that poor management, and not only heavy use, has harmed the nation&rsquo;s resources?", "lead": null, "quote": null, "opts": ["&ldquo;We began with an unapproached heritage of forests; more than half of the timber is gone.&rdquo; (paragraph 2)", "&ldquo;The enormous stores of mineral oil and gas are largely gone . . .&rdquo; (paragraph 3)", "&ldquo;We have become great in a material sense because of the lavish use of our resources, and we have just reason to be proud of our growth.&rdquo; (paragraph 4)", "&ldquo;Our natural waterways are not gone, but they have been so injured by neglect, and by the division of responsibility and utter lack of system in dealing with them, that there is less navigation on them now than there was fifty years ago.&rdquo; (paragraph 3)"], "text": "roosevelt", "grp": "roosevelt", "fig": null, "ai": 3}, {"sec": "ela", "n": 40, "type": "mc", "stem": "In paragraph 3, the speaker describes the nation&rsquo;s depletion of resources as &ldquo;thoughtlessly, and to a large degree unnecessarily.&rdquo; This language primarily serves to", "lead": null, "quote": null, "opts": ["suggest that the nation&rsquo;s pursuit of prosperity has made the depletion of natural resources an unavoidable consequence of economic progress.", "emphasize that Americans underestimated the value of their resources because they believed those resources would remain abundant.", "underscore the extent to which the nation&rsquo;s loss of natural resources resulted from preventable failures of judgment and planning.", "imply that the nation&rsquo;s leaders were aware of the consequences of resource depletion but prioritized immediate prosperity over future security."], "text": "roosevelt", "grp": "roosevelt", "fig": null, "ai": 2}, {"sec": "ela", "n": 41, "type": "mc", "stem": "In paragraph 4, the speaker&rsquo;s description of a man who owns his farm rather than renting it mainly serves to", "lead": null, "quote": null, "opts": ["compare the nation&rsquo;s duty toward its resources to an owner&rsquo;s desire to pass his property on to his children in good condition.", "argue that the government should help more families buy their own farms instead of renting them.", "explain that the practice of renting farmland caused the soil damage described in paragraph 3.", "suggest that conservation is the responsibility of individual farmers rather than of the nation as a whole."], "text": "roosevelt", "grp": "roosevelt", "fig": null, "ai": 0}, {"sec": "ela", "n": 42, "type": "mc", "stem": "Paragraph 4 contributes to the development of ideas in the passage mainly by", "lead": null, "quote": null, "opts": ["arguing that the nation&rsquo;s growth justifies the losses described in paragraphs 2 and 3.", "shifting from describing damage that has already been done to urging the nation to plan for the future.", "providing new data about how quickly coal, iron, oil, and gas are being used.", "outlining specific laws the nation should pass to protect its forests and soil."], "text": "roosevelt", "grp": "roosevelt", "fig": null, "ai": 1}, {"sec": "ela", "n": 43, "type": "mc", "stem": "Which sentence should replace the opening sentence to best introduce the main claim of the passage?", "lead": null, "quote": null, "opts": ["Today&rsquo;s surgeons can trace their roots to ancient Greece.", "The surgeon of modern times evolved from the ancient but humble position of the barber.", "Barbers and surgeons have a lot of things they disagree on.", "The history of barbers is a complex and fascinating one."], "text": "barber", "grp": "barber", "fig": null, "ai": 1}, {"sec": "ela", "n": 44, "type": "mc", "stem": "Which sentence is irrelevant to the argument presented in the passage and should be deleted?", "lead": null, "quote": null, "opts": ["&ldquo;Being a barber is an old profession.&rdquo;", "&ldquo;That same year, the Pope issued an important decree about religious pilgrimages.&rdquo;", "&ldquo;Eventually, the barbers in London grouped together to form a guild.&rdquo;", "&ldquo;A change of title occurred in 1540, and the barbers were then called the Company of Barber-Surgeons.&rdquo;"], "text": "barber", "grp": "barber", "fig": null, "ai": 1}, {"sec": "ela", "n": 45, "type": "mc", "stem": "What is the best way to combine the following two sentences to clarify the relationship between ideas?", "lead": null, "quote": "The practice of surgery involved the shedding of blood. Monks felt that this practice did not suit the functions of the clergy.", "opts": ["The practice of surgery involved the shedding of blood, since monks felt that this practice did not suit the functions of the clergy.", "The practice of surgery involved the shedding of blood; however, monks felt that this practice did not suit the functions of the clergy.", "Because the practice of surgery involved the shedding of blood, monks felt that this practice did not suit the functions of the clergy.", "Monks felt that the practice of surgery did not suit the functions of the clergy, although it involved the shedding of blood."], "text": "barber", "grp": "barber", "fig": null, "ai": 2}, {"sec": "ela", "n": 46, "type": "mc", "stem": "Which revision of the following sentence uses the most precise language?", "lead": null, "quote": "This practice upset people, so a new law was passed eventually, telling the barbers in London to pour the blood somewhere else.", "opts": ["This practice upset people, so a new law was passed in 1307 telling the barbers in London to pour the blood somewhere else.", "This practice upset a great many people, so a new law was passed eventually, telling the barbers in London to pour the blood elsewhere.", "This practice upset people, so a new law was passed a number of years later, telling the barbers in London to pour the blood into the river.", "This practice upset people, so a new law was passed in 1307 telling the barbers in London to pour the blood into the river."], "text": "barber", "grp": "barber", "fig": null, "ai": 3}, {"sec": "ela", "n": 47, "type": "mc", "stem": "Which sentence could be added to follow and support the sentence &ldquo;Being a barber is an old profession&rdquo;?", "lead": null, "quote": null, "opts": ["Another very old and significant profession is the court jester.", "The earliest references to surgery can be found in the literature of the Renaissance.", "The Book of Ezekiel, written more than 2,500 years ago, refers to a &ldquo;barber&rsquo;s razor.&rdquo;", "Shaving and hair-cutting has been a documented human behavior for thousands of years, but not as prevalent as other habits such as bathing."], "text": "barber", "grp": "barber", "fig": null, "ai": 2}, {"sec": "ela", "n": 48, "type": "multi", "stem": "Which two edits should be made to correct the sentence?<p class='ent'>Select the <b>two</b> correct answers.</p>", "lead": "Read this sentence.", "quote": "Robert Cornelius is credited with taking the first, official selfie as a daguerreotype, an image recorded on a copper plate coated in silver, using a process that was more complicated than the process used for photos of today which are digitized or printed from film and do not require subjects to sit for nearly fifteen minutes to avoid blurring the image.", "opts": ["Delete the comma after <i>first</i>.", "Delete the comma after <i>daguerreotype</i>.", "Delete the comma after <i>silver</i>.", "Add a comma after <i>today</i>.", "Add a comma after <i>film</i>."], "text": null, "grp": null, "fig": null, "ais": [0, 3], "pick": 2}, {"sec": "ela", "n": 49, "type": "mc", "stem": "What is the best way to combine these sentences in order to clarify the relationship between the two ideas?", "lead": "Read these sentences.", "quote": "(1) The average New York City theatergoer is 44 years old.<br>(2) Theater companies have tried to attract younger audiences with discounted tickets, free merchandise, and nontraditional productions.", "opts": ["The average New York City theatergoer is 44 years old, and theater companies have tried to attract younger audiences with discounted tickets, free merchandise, and nontraditional productions.", "Because theater companies have tried to attract younger audiences with discounted tickets, free merchandise, and nontraditional productions, the average New York City theatergoer is 44 years old.", "Theater companies have tried to attract younger audiences with discounted tickets, free merchandise, and nontraditional productions, so the average New York City theatergoer is 44 years old.", "Because the average New York City theatergoer is 44 years old, theater companies have tried to attract younger audiences with discounted tickets, free merchandise, and nontraditional productions."], "text": null, "grp": null, "fig": null, "ai": 3}, {"sec": "ela", "n": 50, "type": "mc", "stem": "Which sentence should be revised to correct a misplaced modifier?", "lead": "Read this paragraph.", "quote": "(1) Sitting at home and staring at the television, an overwhelming number of options are available to watch. (2) Yet a growing number of Americans are turning to online video streaming services, in a trend nicknamed &ldquo;cutting the cord.&rdquo; (3) In fact, according to a recent study, 73% of Americans age 18&ndash;28 said their primary source of television entertainment came from such streaming services. (4) Experts predict that this number will increase sharply over the next decade, giving traditional television networks cause for alarm.", "opts": ["sentence 1", "sentence 2", "sentence 3", "sentence 4"], "text": null, "grp": null, "fig": null, "ai": 0}]}, {"key": "math", "label": "Mathematics", "items": [{"n": 1, "topic": "Prime factorization", "type": "mc", "stem": "<p>What is the prime factorization of 4,235?</p>", "fig": null, "opts": ["5 &middot; 847", "5 &middot; 7 &middot; 121", "5<sup>2</sup> &middot; 7 &middot; 11", "5 &middot; 7 &middot; 11<sup>2</sup>"], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 2, "topic": "Percent decrease", "type": "mc", "stem": "<p>The table shows the number of birds at a feeder on two days.</p><div class='tw'><div class='tt'>BIRDS AT FEEDER</div><table class='data'><tr><th>Day</th><th>Number of Birds</th></tr><tr><td>Monday</td><td>45</td></tr><tr><td>Tuesday</td><td>36</td></tr></table></div><p>What was the percent decrease in the number of birds from Monday to Tuesday?</p>", "fig": null, "opts": ["9%", "20%", "25%", "80%"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 3, "topic": "Unit rate with fractions (proportional reasoning)", "type": "mc", "stem": "<p>A student reads <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">15</span></span> of a book in <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">4</span></span> hour. At this rate, what fraction of the book can the student read in 1 hour?</p>", "fig": null, "opts": ["<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">60</span></span>", "<span class=\"frac\"><span class=\"num\">11</span><span class=\"den\">60</span></span>", "<span class=\"frac\"><span class=\"num\">4</span><span class=\"den\">15</span></span>", "<span class=\"frac\"><span class=\"num\">15</span><span class=\"den\">4</span></span>"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 4, "topic": "Additive inverses", "type": "mc", "stem": "<p>Which situation involves quantities that combine to equal zero?</p>", "fig": null, "opts": ["buying a shirt for $25 and buying a hat for $25", "walking 3 blocks north and then walking 3 more blocks north", "descending 15 feet and then descending 15 more feet", "depositing $40 into an account and then withdrawing $40"], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 5, "topic": "Constant of proportionality from a table", "type": "num", "stem": "<p>The table shows a proportional relationship between <i>x</i> cups of flour and <i>y</i> grams of yeast in a recipe.</p><div class='tw'><div class='tt'>BREAD RECIPE</div><table class='data'><tr><th>Cups of Flour (<i>x</i>)</th><th>Grams of Yeast (<i>y</i>)</th></tr><tr><td>4</td><td>2.5</td></tr><tr><td>6</td><td>3.75</td></tr><tr><td>10</td><td>6.25</td></tr></table></div><p>What is the constant of proportionality of the number of grams of yeast to the number of cups of flour?</p><p class='ent'>Enter your answer in the space.</p>", "fig": null, "ans": "0.625", "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 6, "topic": "Unit conversion", "type": "mc", "stem": "<p>There were 48 people at a party. If each person drank 3 cups of juice, how many <b>gallons</b> of juice did they drink altogether?</p>", "fig": null, "opts": ["2.25", "4.5", "9", "36"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 7, "topic": "Signed quantities in context", "type": "mc", "stem": "<p>Maxie borrowed $9.25 from her mother, $13.50 from her father, and $6.75 from her brother to buy a bicycle. Her grandmother then gave her $30.00 as a gift. How much money will Maxie have left, or still owe, if she uses her grandmother&rsquo;s gift to pay back everything she borrowed?</p>", "fig": null, "opts": ["Maxie will still owe $0.50.", "Maxie will still owe $1.50.", "Maxie will have $1.50 left.", "Maxie will have $0.50 left."], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 8, "topic": "Divisibility", "type": "num", "stem": "<p>What 3-digit number between 840 and 880 is divisible by both 6 and 15?</p><p class='ent'>Enter your answer in the space.</p>", "fig": null, "ans": "870", "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 9, "topic": "Greatest common factor", "type": "mc", "stem": "<p>Anise has a piece of cloth measuring 42 inches by 70 inches. She wants to cut it into squares of equal size with no cloth left over. What is the <b>greatest</b> possible side length, in inches, of one of those squares?</p>", "fig": null, "opts": ["2", "7", "14", "21"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 10, "topic": "Scale drawing", "type": "mc", "stem": "<p>In a scale drawing of a triangular park, the sides measure 6 inches, 9 inches, and 10 inches. The perimeter of the actual park is 75 miles. What is the actual length of the shortest side of the park?</p>", "fig": null, "opts": ["15 mi", "18 mi", "22.5 mi", "30 mi"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 11, "topic": "Writing an expression", "type": "mc", "stem": "<p>The cost of shipping a package is $15, plus $3 for each additional pound over 5 pounds. Which expression represents the total cost, in dollars, of shipping a package that weighs <i>p</i> pounds? Assume that <i>p</i> &ge; 5.</p>", "fig": null, "opts": ["15 + 3(<i>p</i> &minus; 5)", "15 + 3(<i>p</i> + 5)", "18<i>p</i> &minus; 5", "18<i>p</i> + 5"], "ai": 0, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 12, "topic": "Writing an inequality", "type": "mc", "stem": "<p>A team has 68 points in a contest and must have a total of at least 150 points to win a prize. The team earns 4 points for each can of food a member collects. Which inequality can be used to find <i>x</i>, the number of cans the team needs to collect?</p>", "fig": null, "opts": ["4 + 68<i>x</i> &le; 150", "4 + 68<i>x</i> &ge; 150", "68 + 4<i>x</i> &le; 150", "68 + 4<i>x</i> &ge; 150"], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 13, "topic": "Fraction of a remainder", "type": "mc", "stem": "<p>Nadia must read 126 pages for an assignment. If she reads <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">3</span></span> of the pages in the morning and <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">4</span></span> of the <b>remaining</b> pages in the afternoon, how many pages will she still need to read?</p>", "fig": null, "opts": ["21", "42", "63", "84"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 14, "topic": "Overlapping sets", "type": "mc", "stem": "<p>At a school, 84 students are members of either the band or the chorus, or both. Of these students, 52 are members of the band and 47 are members of the chorus. What fraction of the total is the number of students who are members of <b>both</b> the band and the chorus?</p>", "fig": null, "opts": ["<span class=\"frac\"><span class=\"num\">15</span><span class=\"den\">99</span></span>", "<span class=\"frac\"><span class=\"num\">5</span><span class=\"den\">28</span></span>", "<span class=\"frac\"><span class=\"num\">5</span><span class=\"den\">16</span></span>", "<span class=\"frac\"><span class=\"num\">47</span><span class=\"den\">84</span></span>"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 15, "topic": "Sample space", "type": "mc", "stem": "<p>A bag holds two red (R) marbles, two green (G) marbles, and two white (W) marbles, all the same size. Two marbles will be drawn from the bag without looking. Which list shows the sample space for this experiment?</p>", "fig": null, "opts": ["RR, RG, RW, GG, GW, WW", "R, G, W", "RG, RW, GW", "R, R, G, G, W, W"], "ai": 0, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 16, "topic": "Probability of a product", "type": "mc", "stem": "<p>Karl has one red spinner and one blue spinner. Each spinner is divided into 6 equal sections, numbered 1 through 6. He spins each spinner once and writes down the number each lands on. What is the probability that the two numbers, when multiplied together, have 12 as a product?</p>", "fig": null, "opts": ["<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">36</span></span>", "<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">9</span></span>", "<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">6</span></span>", "<span class=\"frac\"><span class=\"num\">4</span><span class=\"den\">9</span></span>"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 17, "topic": "Repeating decimals", "type": "mc", "stem": "<p>Which of the following decimals is equivalent to 1<span class=\"frac\"><span class=\"num\">2</span><span class=\"den\">3</span></span> + 2<span class=\"frac\"><span class=\"num\">4</span><span class=\"den\">9</span></span>?</p>", "fig": null, "opts": ["3.<span class='rep'>1</span>", "3.<span class='rep'>6</span>", "4.<span class='rep'>1</span>", "4.<span class='rep'>9</span>"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 18, "topic": "Sum of unit fractions", "type": "mc", "stem": "<p class='disp'><span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">13</span></span> + <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">26</span></span> + <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">39</span></span></p><p>What is the value of the expression shown above?</p>", "fig": null, "opts": ["<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">39</span></span>", "<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">13</span></span>", "<span class=\"frac\"><span class=\"num\">3</span><span class=\"den\">26</span></span>", "<span class=\"frac\"><span class=\"num\">11</span><span class=\"den\">78</span></span>"], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 19, "topic": "Interpreting a proportional graph", "type": "mc", "stem": "<p>The graph shows the relationship between the number of liters of water, <i>y</i>, added to a tank and the number of hours, <i>x</i>, that water has been added at a constant rate. What does the ordered pair (4, 28) represent?</p>", "fig": "prop_graph", "opts": ["Twenty-eight liters of water were added in 4 hours.", "Four liters of water were added in 28 hours.", "Four liters of water were added each hour.", "Twenty-eight liters of water were added each hour."], "ai": 0, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 20, "topic": "Number of solutions of a linear equation", "type": "rowtable", "stem": "<p>Determine whether each equation has one solution, no solution, or infinitely many solutions.</p><p class='ent'>Select one answer in each row.</p>", "fig": null, "rows": ["4(<i>x</i> &minus; 2) = 4<i>x</i> &minus; 8", "7<i>x</i> + 3 = 7<i>x</i> &minus; 3", "5(<i>x</i> + 2) = 3<i>x</i> + 10", "2(3<i>x</i> &minus; 1) = 6<i>x</i> + 5"], "cols": ["One solution", "No solution", "Infinitely many solutions"], "correct": [2, 1, 0, 1], "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 21, "topic": "Sign reasoning with variables", "type": "multi", "stem": "<p>Let <i>m</i> be a negative integer and <i>k</i> be a positive integer.</p><p>Which of the expressions below <b>must</b> result in a positive value?</p><p class='ent'>Select the <b>three</b> correct answers.</p>", "fig": null, "opts": ["&minus;<i>m</i> + <i>k</i>", "&minus;<i>m</i> &middot; <i>k</i>", "<i>m</i> &minus; <i>k</i>", "&minus;<i>k</i> &middot; <i>m</i>", "<span class=\"frac\"><span class=\"num\"><i>m</i></span><span class=\"den\"><i>k</i></span></span>"], "ais": [0, 1, 3], "pick": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 22, "topic": "Successive percent change", "type": "mc", "stem": "<p>A store manager purchases a piece of furniture for $380.00. To determine the selling price, the manager increases the purchase cost by 145%. A customer buys the furniture and pays an additional 7% sales tax. How much does the customer pay for the furniture?</p>", "fig": null, "opts": ["$406.60", "$589.57", "$931.00", "$996.17"], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 23, "topic": "Box plot: interquartile range and outliers", "type": "mc", "stem": "<p>The box plot shows the number of minutes each member of a band practiced on one day.</p><p>A value is an outlier if it lies more than 1.5 &times; IQR beyond a quartile. Which statement about this data set is correct?</p>", "fig": "boxplot_n", "opts": ["The interquartile range is 18 minutes, and the maximum value is an outlier.", "The interquartile range is 18 minutes, and the maximum value is not an outlier.", "The interquartile range is 44 minutes, and the maximum value is not an outlier.", "The interquartile range is 44 minutes, and the maximum value is an outlier."], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 24, "topic": "Area of a shaded region", "type": "num", "stem": "<p>A square metal plate has a side length of 4 inches. A circular hole with a diameter of 3 inches is cut out from the center of the plate.</p><p>What is the area of the shaded region, to the nearest hundredth of a square inch?</p><p class='ent'>Enter your answer in the space.</p>", "fig": "plate", "ans": "8.93", "tol": 0.015, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 25, "topic": "Angles of a right triangle", "type": "mc", "stem": "<p>In the right triangle shown, what is the measure of the <b>smallest</b> angle?</p>", "fig": "right_triangle", "opts": ["19&deg;", "43&deg;", "47&deg;", "53&deg;"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 26, "topic": "Radius, diameter, and a chord", "type": "mc", "stem": "<p><i>P</i> is the center of the circle shown, and <i>R</i>, <i>S</i>, and <i>T</i> are points on the circle. What is the value of <i>x</i>?</p>", "fig": "circle_radius", "opts": ["4", "16", "20", "24"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 27, "topic": "Parallel lines cut by a transversal", "type": "mc", "stem": "<p>In the figure, line <i>j</i> is parallel to line <i>k</i>. What is the measure of &ang;<i>W</i>?</p>", "fig": "transversal_n", "opts": ["32&deg;", "58&deg;", "122&deg;", "148&deg;"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 28, "topic": "Scientific notation", "type": "mc", "stem": "<p class='disp'><span class=\"frac\"><span class=\"num\">18.6 &times; 10<sup>&minus;5</sup></span><span class=\"den\">3.1 &times; 10<sup>3</sup></span></span></p><p>What is the quotient of the expression above, expressed in scientific notation?</p>", "fig": null, "opts": ["6 &times; 10<sup>&minus;15</sup>", "6 &times; 10<sup>&minus;2</sup>", "6 &times; 10<sup>8</sup>", "6 &times; 10<sup>&minus;8</sup>"], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 29, "topic": "Exponent rules combined", "type": "mc", "stem": "<p>Simplify:</p><p class='disp'><span class=\"frac\"><span class=\"num\"><i>n</i><sup>9</sup> &middot; <i>n</i><sup>0</sup></span><span class=\"den\"><i>n</i><sup>&minus;5</sup></span></span></p>", "fig": null, "opts": ["<i>n</i><sup>14</sup>", "0", "<i>n</i><sup>4</sup>", "<i>n</i><sup>&minus;45</sup>"], "ai": 0, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 30, "topic": "Solving a literal equation", "type": "mc", "stem": "<p>What is the value of <i>w</i> in <span class=\"frac\"><span class=\"num\"><i>x</i></span><span class=\"den\">8</span></span> + <span class=\"frac\"><span class=\"num\"><i>y</i> &minus; <i>x</i></span><span class=\"den\">4</span></span> = <span class=\"frac\"><span class=\"num\"><i>w</i></span><span class=\"den\">8</span></span>?</p>", "fig": null, "opts": ["2<i>y</i> &minus; <i>x</i>", "1", "8", "<i>y</i>"], "ai": 0, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 31, "topic": "Inverse variation of rate and time", "type": "mc", "stem": "<p>A bus trip takes 12 hours if the mean speed is 55 miles per hour. How many hours would this trip take if the mean speed were 44 miles per hour?</p>", "fig": null, "opts": ["9.6", "12", "15", "18"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 32, "topic": "Comparing unit prices", "type": "dropdown", "stem": "<p>Two student clubs are selling snacks as part of a fundraiser. The Art Club sells a 36-pack of granola bars for $21.60. The Science Club sells a 15-pack of granola bars for $10.50. To the nearest cent, what is the difference in cost per bar between the two clubs?</p><p class='ent'>Select the correct answer from each drop-down to complete the sentences.</p>", "fig": null, "parts": [["The cost for the Art Club&rsquo;s bar is ", ["$0.55", "$0.60", "$0.65", "$0.72"], 1, " per bar."], ["The cost for the Science Club&rsquo;s bar is ", ["$0.70", "$0.75", "$0.80", "$0.90"], 0, " per bar."], ["The difference between the cost of the bars is ", ["$0.05", "$0.10", "$0.15", "$0.25"], 1, "."]], "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 33, "topic": "Completing a table from a rule", "type": "dragtable", "stem": "<p>A company charges $5.00 to ship a 6-pound package. The cost includes a base fee of $2.00 plus $0.60 for each pound over the first pound. The table below shows how the cost depends on the total weight of the package. Complete the table by matching each total weight to its correct total shipping cost.</p><p class='ent'>Move the correct answer to each box. Not all answers will be used.</p>", "fig": null, "tokens": ["2.60", "3.20", "4", "5", "6.20", "7", "9", "10"], "head": ["Total Weight (pounds)", "Total Cost to Ship (dollars)"], "body": [["3", null], [null, "4.40"], ["8", null], [null, "7.40"]], "correct": ["3.20", "5", "6.20", "10"], "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 34, "topic": "Probability from a table", "type": "mc", "stem": "<p>The table shows the probabilities of a hockey team scoring different numbers of goals in a game.</p><div class='tw'><div class='tt'>HOCKEY GOAL PROBABILITIES</div><table class='data'><tr><th>Number of Goals</th><th>Probability</th></tr><tr><td>0</td><td>0.11</td></tr><tr><td>1</td><td>0.19</td></tr><tr><td>2</td><td>0.27</td></tr><tr><td>3</td><td>0.23</td></tr><tr><td>4</td><td>0.13</td></tr><tr><td>5</td><td>0.07</td></tr></table></div><p>What is the probability that the team will score three or more goals in the next game?</p>", "fig": null, "opts": ["0.20", "0.23", "0.43", "0.57"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 35, "topic": "Writing a probability expression", "type": "expr", "stem": "<p>In a school raffle, 1 out of every 40 students wins a prize. Each prize includes a randomly selected trading card from a set of 250 different cards, labeled C1 through C250, with each card equally likely to be chosen.</p><p>Write an expression that represents the probability that a student wins the prize <b>and</b> receives Card C88.</p><p class='ent'>Enter your answer in the space provided. Enter only your answer.</p>", "fig": null, "ans": ["1/40*1/250", "1/250*1/40", "(1/40)(1/250)", "(1/250)(1/40)", "(1/40)*(1/250)", "(1/250)*(1/40)", "1/(40*250)", "1/(250*40)", "1/10000", "1/10,000", "0.0001"], "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 36, "topic": "Percentage of a goal", "type": "num", "stem": "<p>Leah has set a goal to read a total of 750 pages of a textbook. The table shows the book page numbers for the reading she did during three days.</p><div class='tw'><div class='tt'>DAILY READING LOG</div><table class='data'><tr><th>Day</th><th>Pages Read</th></tr><tr><td>1</td><td>pages 61&ndash;130, inclusive</td></tr><tr><td>2</td><td>pages 200&ndash;264, inclusive</td></tr><tr><td>3</td><td>pages 310&ndash;387, inclusive</td></tr></table></div><p>What percentage of her 750-page goal did Leah read on these three days?</p><p class='ent'>Enter your answer in the space.</p>", "fig": null, "ans": "28.4", "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 37, "topic": "Combinations", "type": "mc", "stem": "<p>A company hired 8 people as summer workers. Of these 8 people, 4 will be hired as permanent employees in the fall. If 3 of the 8 people are male, how many of the possible groups of 4 people hired in the fall will include <b>only</b> 1 male?</p>", "fig": null, "opts": ["10", "15", "30", "70"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 38, "topic": "Reasoning with sets", "type": "mc", "stem": "<p>Two sets, <i>R</i> and <i>S</i>, are described below. The sum of the elements in set <i>R</i> equals the sum of the elements in set <i>S</i>.</p><p class='disp'><i>R</i> = {7, <i>x</i>, 4, 9}<br><i>S</i> = {8, <i>y</i>, 5, 3}</p><p>What is the value of <i>x</i> &minus; <i>y</i>?</p>", "fig": null, "opts": ["&minus;4", "&minus;2", "4", "6"], "ai": 0, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 39, "topic": "Evaluating a complex fraction", "type": "mc", "stem": "<p>If <i>x</i> = <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">5</span></span>, what is the value of <span class=\"frac\"><span class=\"num\">3</span><span class=\"den\">3 &minus; <i>x</i></span></span>?</p>", "fig": null, "opts": ["<span class=\"frac\"><span class=\"num\">3</span><span class=\"den\">14</span></span>", "<span class=\"frac\"><span class=\"num\">14</span><span class=\"den\">15</span></span>", "1<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">14</span></span>", "2<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">2</span></span>"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 40, "topic": "Isosceles triangles and angle chasing", "type": "mc", "stem": "<p>In the figure, point <i>D</i> lies on <i>AC</i>, with <i>AB</i> = <i>AC</i> and <i>AD</i> = <i>DB</i> = <i>BC</i>, as the tick marks show. What is the value of <i>x</i>?</p>", "fig": "isosceles_chain", "opts": ["30", "36", "45", "72"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 41, "topic": "Estimating square roots", "type": "mc", "stem": "<p>Which number has a value that is located between 9 and 10 on a number line?</p>", "fig": null, "opts": ["&radic;<span class='rad'>72</span>", "&radic;<span class='rad'>88</span>", "&radic;<span class='rad'>104</span>", "&radic;<span class='rad'>120</span>"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 42, "topic": "Estimating with pi", "type": "mc", "stem": "<p>Which of the following expressions is <b>negative</b> in value?</p>", "fig": null, "opts": ["25 &minus; 8&pi;", "7 &minus; 2&pi;", "3&pi; &minus; 9", "13 &minus; 4&pi;"], "ai": 0, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 43, "topic": "Defined operation", "type": "mc", "stem": "<p>The symbol &lang;<i>x</i>, <i>y</i>, <i>z</i>&rang; means <span class=\"frac\"><span class=\"num\"><i>xz</i> + <i>xy</i></span><span class=\"den\">2</span></span> + <i>zy</i>. What is the value of &lang;4, 3, 6&rang;?</p>", "fig": null, "opts": ["18", "30", "36", "42"], "ai": 2, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 44, "topic": "Writing an inequality from a budget", "type": "expr", "stem": "<p>Jordan has a budget of $200 to rent a booth at a fair. The rental company charges $24 per hour to rent the booth, plus a one-time setup fee of $35.</p><p>Write an inequality that represents this situation, in which <i>x</i> is the number of hours Jordan can rent the booth.</p><p class='ent'>Enter your answer in the space provided. Enter only your answer.</p>", "fig": null, "ans": ["24x+35<=200", "35+24x<=200", "24*x+35<=200", "200>=24x+35", "200>=35+24x"], "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 45, "topic": "Intersection of two lines", "type": "mc", "stem": "<p>What is the point of intersection of the graphs of <i>y</i> = &minus;5<i>x</i> + 4 and <i>y</i> = 3<i>x</i> &minus; 2?</p>", "fig": null, "opts": ["(&minus;<span class=\"frac\"><span class=\"num\">3</span><span class=\"den\">4</span></span>, <span class=\"frac\"><span class=\"num\">31</span><span class=\"den\">4</span></span>)", "(<span class=\"frac\"><span class=\"num\">3</span><span class=\"den\">4</span></span>, &minus;<span class=\"frac\"><span class=\"num\">17</span><span class=\"den\">4</span></span>)", "(&minus;<span class=\"frac\"><span class=\"num\">3</span><span class=\"den\">4</span></span>, <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">4</span></span>)", "(<span class=\"frac\"><span class=\"num\">3</span><span class=\"den\">4</span></span>, <span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">4</span></span>)"], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 46, "topic": "Similar triangles with a variable", "type": "mc", "stem": "<p>In the figure, &#9651;<i>MPR</i> is similar to &#9651;<i>NPQ</i>. If <i>NP</i> is 6 centimeters and <i>NQ</i> is 12 centimeters, what is the length of <span style='text-decoration:overline'><i>MR</i></span> in terms of <i>x</i>?</p>", "fig": "similar_mpr", "opts": ["2<i>x</i>", "2<i>x</i> + 12", "<i>x</i> + 6", "<span class=\"frac\"><span class=\"num\">1</span><span class=\"den\">2</span></span><i>x</i> + 6"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 47, "topic": "System from a context", "type": "mc", "stem": "<p>To determine the price of servicing a car, a mechanic charges a fixed fee plus an hourly rate for each hour he works. If his price for 5 hours of work is $340, and his price for 8 hours of work is $499, what is the fixed fee that the mechanic charges?</p>", "fig": null, "opts": ["$53", "$75", "$87", "$159"], "ai": 1, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 48, "topic": "Building equations from a context", "type": "dropdown", "stem": "<p>A container initially contains <i>n</i> gallons of water. A student adds 18 gallons of water, making the container 60% full. After the student adds 12 more gallons of water, the container is 80% full.</p><p class='ent'>Select the correct answers from each drop-down to complete the sentences.</p><p>Let <i>x</i> represent the total number of gallons the container can hold.</p>", "fig": null, "parts": [["The equation that represents the situation immediately after the student adds 18 gallons of water is <i>n</i> + 18 = ", ["0.6<i>x</i>", "0.8<i>x</i>", "60<i>x</i>", "18<i>x</i>"], 0, "."], ["The equation that represents the situation after the student adds 12 more gallons of water is <i>n</i> + 30 = ", ["0.6<i>x</i>", "0.8<i>x</i>", "80<i>x</i>", "30<i>x</i>"], 1, "."], ["The number of gallons, <i>n</i>, in the container initially is ", ["12", "18", "36", "60"], 1, " gallons."]], "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 49, "topic": "Perimeter and side ratios", "type": "mc", "stem": "<p>The perimeter of square <i>W</i> is three times the perimeter of equilateral triangle <i>X</i>. What is the ratio of the length of one side of square <i>W</i> to the length of one side of equilateral triangle <i>X</i>?</p>", "fig": null, "opts": ["3:4", "4:9", "3:1", "9:4"], "ai": 3, "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}, {"n": 50, "topic": "Reasoning about a defined function", "type": "num", "stem": "<p>Assume <i>S</i>(<i>x</i>) equals the sum of all positive <b>odd</b> integers less than or equal to <i>x</i>. What is the value of <i>S</i>(15)?</p><p class='ent'>Enter your answer in the space.</p>", "fig": null, "ans": "64", "sec": "math", "lead": null, "quote": null, "grp": null, "text": null}]}], "texts": {"speckled": {"label": "The Speckled Band", "html": "<h3 class=\"ptitle\">Excerpt from &ldquo;The Adventure of the Speckled Band&rdquo;</h3><div class=\"byline\">by Sir Arthur Conan Doyle</div><p class=\"pintro\">In this excerpt, renowned detective Sherlock Holmes and his companion and chronicler Dr. Watson have received an early morning visit from a distraught woman, afraid for her life. The stepdaughter of Dr. Grimesby Roylott, she has witnessed the mysterious death of her sister and been ill-treated by her stepfather, a violent and unpredictable man who unexpectedly bursts in on Holmes and Watson.</p><p class=\"ppara\"><span class=\"pnum\">1</span><span>[O]ur door had been suddenly dashed open, and . . . a huge man had framed himself in the aperture. His costume was a peculiar mixture of the professional and of the agricultural, having a black top-hat, a long frock-coat, and a pair of high gaiters, with a hunting crop swinging in his hand. So tall was he that his hat actually brushed the crossbar of the doorway, and his breadth seemed to span it across from side to side. A large face, seared with a thousand wrinkles, burned yellow with the sun, and marked with every evil passion, was turned from one to the other of us, while his deep-set, bile-shot eyes, and his high, thin, fleshless nose, gave him somewhat the resemblance to a fierce old bird of prey.</span></p><p class=\"ppara\"><span class=\"pnum\">2</span><span>&ldquo;Which of you is Holmes?&rdquo; asked this apparition.</span></p><p class=\"ppara\"><span class=\"pnum\">3</span><span>&ldquo;My name, sir; but you have the advantage of me,&rdquo; said my companion quietly.</span></p><p class=\"ppara\"><span class=\"pnum\">4</span><span>&ldquo;I am Dr. Grimesby Roylott, of Stoke Moran.&rdquo;</span></p><p class=\"ppara\"><span class=\"pnum\">5</span><span>&ldquo;Indeed, Doctor,&rdquo; said Holmes blandly. &ldquo;Pray take a seat.&rdquo;</span></p><p class=\"ppara\"><span class=\"pnum\">6</span><span>&ldquo;I will do nothing of the kind. My stepdaughter has been here. I have traced her. What has she been saying to you?&rdquo;</span></p><p class=\"ppara\"><span class=\"pnum\">7</span><span>&ldquo;It is a little cold for the time of the year,&rdquo; said Holmes.</span></p><p class=\"ppara\"><span class=\"pnum\">8</span><span>&ldquo;What has she been saying to you?&rdquo; screamed the old man furiously.</span></p><p class=\"ppara\"><span class=\"pnum\">9</span><span>&ldquo;But I have heard that the crocuses promise well,&rdquo; continued my companion imperturbably.</span></p><p class=\"ppara\"><span class=\"pnum\">10</span><span>&ldquo;Ha! You put me off, do you?&rdquo; said our new visitor, taking a step forward and shaking his hunting crop. &ldquo;I know you, you scoundrel! I have heard of you before. You are Holmes, the meddler.&rdquo;</span></p><p class=\"ppara\"><span class=\"pnum\">11</span><span>My friend smiled.</span></p><p class=\"ppara\"><span class=\"pnum\">12</span><span>&ldquo;Holmes, the busybody!&rdquo;</span></p><p class=\"ppara\"><span class=\"pnum\">13</span><span>His smile broadened.</span></p><p class=\"ppara\"><span class=\"pnum\">14</span><span>&ldquo;Holmes, the Scotland Yard Jack-in-office!&rdquo;</span></p><p class=\"ppara\"><span class=\"pnum\">15</span><span>Holmes chuckled heartily. &ldquo;Your conversation is most entertaining,&rdquo; said he. &ldquo;When you go out close the door, for there is a decided draught.&rdquo;</span></p><p class=\"ppara\"><span class=\"pnum\">16</span><span>&ldquo;I will go when I have said my say. Don&rsquo;t you dare to meddle with my affairs. I know that Miss Stoner has been here. I traced her! I am a dangerous man to fall foul of! See here.&rdquo; He stepped swiftly forward, seized the poker, and bent it into a curve with his huge brown hands.</span></p><p class=\"ppara\"><span class=\"pnum\">17</span><span>&ldquo;See that you keep yourself out of my grip,&rdquo; he snarled, and hurling the twisted poker into the fireplace he strode out of the room.</span></p><p class=\"ppara\"><span class=\"pnum\">18</span><span>&ldquo;He seems a very amiable person,&rdquo; said Holmes, laughing. &ldquo;I am not quite so bulky, but if he had remained I might have shown him that my grip was not much more feeble than his own.&rdquo; As he spoke he picked up the steel poker and, with a sudden effort, straightened it out again.</span></p><p class=\"ppara\"><span class=\"pnum\">19</span><span>&ldquo;Fancy his having the insolence to confound me with the official detective force! This incident gives zest to our investigation, however, and I only trust that our little friend will not suffer from her imprudence in allowing this brute to trace her. And now, Watson, we shall order breakfast, and afterwards I shall walk down to Doctors&rsquo; Commons, where I hope to get some data which may help us in this matter.&rdquo;</span></p><p class=\"ppara\"><span class=\"pnum\">20</span><span>It was nearly one o&rsquo;clock when Sherlock Holmes returned from his excursion. He held in his hand a sheet of blue paper, scrawled over with notes and figures.</span></p><p class=\"ppara\"><span class=\"pnum\">21</span><span>&ldquo;I have seen the will of the deceased wife,&rdquo; said he. &ldquo;To determine its exact meaning I have been obliged to work out the present prices of the investments with which it is concerned. The total income, which at the time of the wife&rsquo;s death was little short of 1100 pounds, is now, through the fall in agricultural prices, not more than 750 pounds. Each daughter can claim an income of 250 pounds, in case of marriage. It is evident, therefore, that if both girls had married, this beauty would have had a mere pittance, while even one of them would cripple him to a very serious extent. My morning&rsquo;s work has not been wasted, since it has proved that he has the very strongest motives for standing in the way of anything of the sort. And now, Watson, this is too serious for dawdling, especially as the old man is aware that we are interesting ourselves in his affairs; so if you are ready, we shall call a cab and drive to Waterloo. I should be very much obliged if you would slip your revolver into your pocket. An Eley&rsquo;s No. 2 is an excellent argument with gentlemen who can twist steel pokers into knots. That and a toothbrush are, I think, all that we need.&rdquo;</span></p>"}, "chainmail": {"label": "Chain Mail", "html": "<h3 class=\"ptitle\">Chain Mail</h3><p class=\"ppara\"><span class=\"pnum\">1</span><span>Flexible body armor made from interlocking iron or steel rings was known as far back as the ancient Roman era. Used primarily as protection for elite heavy cavalry troops, various forms of so-called &ldquo;chain mail&rdquo; armor were relatively rare and expensive at that time, and less practical in many ways than the Roman infantryman&rsquo;s segmented steel breastplate. For centuries after the fall of Imperial Rome, the craft of fashioning mail armor fell into disuse. In the medieval period, however, the techniques were revived and became more popular than ever. By the fourteenth century, entire armies were often outfitted with practical and effective linked-metal armor suits.</span></p><p class=\"ppara\"><span class=\"pnum\">2</span><span>The type of armor historians sometimes call &ldquo;chain mail,&rdquo; but which was called by the people of the time merely &ldquo;mail,&rdquo; had many advantages for the individual fighting man in the age of steel weapons. It combined the flexibility and suppleness of cloth with the impact-absorbing mass and cut resistance of rigid metal plates. Edged weapons, no matter how sharp, are incapable of slashing or sawing through a well-fashioned mail suit. Moreover, when struck with a blunt object, the links transfer much of the force through the mass of the garment, absorbing a significant amount of impact instead of allowing it to pass to the soft tissues of the wearer beneath.</span></p><p class=\"ppara\"><span class=\"pnum\">3</span><span>The process of manufacturing a mail shirt was very labor-intensive in preindustrial times. Each of the thousands of individual links that made up a full suit, or &ldquo;harness,&rdquo; had to be individually cut from a coil of hand-drawn wire. The ends of each link were flattened and drilled with tiny holes, and then the link was added into the garment and riveted closed. Each of these steps was accomplished by a small group of specialists in that task to reduce the amount of time needed to produce a suit. The master mailer was then able to grow or shrink the metal garment to &ldquo;knit&rdquo; sleeves, mittens, hoods, and other garments by varying the pattern of interlocking links. Modern mail-makers, or &ldquo;maillers,&rdquo; use these traditional techniques to create historically accurate chain mail and may work alone for a year to produce a full set of mail.</span></p><p class=\"ppara\"><span class=\"pnum\">4</span><span>At first, the expense of chain mail meant that it was used exclusively by the wealthy nobility. As soon as a soldier fell in battle, however, his coveted chain mail would quickly be taken for use by another. Eventually, as improved stabbing and piercing weapons became more widespread, linked mail armor became obsolete and was relegated to the common foot soldier, the peasant recruit, or just discarded completely. For the nobility, the need for greater protection spurred the development of armors revolving around cleverly articulated rigid steel plates instead. Because of this, only a few examples of medieval mail armor survive into the present.</span></p><p class=\"ppara\"><span class=\"pnum\">5</span><span>Today, in addition to traditional maillers, modern maillers produce chain mail with premade wire, electric motors, and pneumatic tools for costumes for Renaissance festivals, movies, theme parks, medieval restaurants, and fantasy hobbyists. Although these modern techniques make the process go faster, &ldquo;mail making&rdquo; remains a tedious, time-consuming pursuit.</span></p>"}, "asteroid": {"label": "Asteroid", "html": "<h3 class=\"ptitle\">Did an Asteroid Kill the Dinosaurs?</h3><p class=\"ppara\"><span class=\"pnum\">1</span><span>The question of why dinosaurs became extinct has puzzled paleontologists since the first dinosaur fossil was found almost two centuries ago. These great reptiles dominated the Earth for nearly 160 million years but mysteriously died out approximately 65 million years ago. Although various explanations for this disappearance have been offered, ranging from an epidemic to a sudden, catastrophic drop in temperature, no theory has yet been conclusively proven.</span></p><p class=\"ppara\"><span class=\"pnum\">2</span><span>One of the best-known theories was proposed in 1980 by Luis Alvarez, a Nobel Prize-winning physicist. According to Alvarez and his geologist son Walter, a huge meteor crashed into the Earth&rsquo;s surface 65 million years ago, sending up a massive cloud of dust and rock particles. The cloud blocked out sunlight for a period of months or even years, disrupting plant growth and the global food chain. The lack of plants as a food source, coupled with a significant drop in temperature, resulted in the extinction of the dinosaurs.</span></p><p class=\"ppara\"><span class=\"pnum\">3</span><span>Alvarez based his theory on an unusual piece of evidence. His research team discovered that a thin layer of the metal iridium had been deposited all over the world at approximately the time the dinosaurs died out. Since iridium is rarely found on the Earth&rsquo;s surface, Alvarez reasoned that it had either come up from the Earth&rsquo;s core by volcanic action or been deposited by meteorite strikes from space. Because iridium was deposited evenly in sediments worldwide, Alvarez found the meteorite theory more likely.</span></p><p class=\"ppara\"><span class=\"pnum\">4</span><span>But paleontologists&mdash;scientists who study fossils and ancient life&mdash;scoffed at the Alvarez extinction theory. Neither Luis nor Walter Alvarez was a paleontologist, yet they claimed to have solved a mystery that had defied the efforts of paleontologists for over a century. Some scientists pointed out that, in order to create the worldwide fallout of iridium on the scale suggested by Alvarez, the &ldquo;doomsday&rdquo; meteorite would have had to be about 5 miles in diameter, and its impact would have formed a crater perhaps a hundred miles wide. If such a meteorite had hit the Earth, where was the crater? Because of the absence of evidence of such a catastrophic collision, these critics were skeptical of the Alvarez theory.</span></p><p class=\"ppara\"><span class=\"pnum\">5</span><span>Finally, a decade after the cosmic extinction theory was first proposed, the crater was found. Lying partly underwater on the northern edge of Mexico&rsquo;s Yucatan Peninsula, the crater is 110 miles wide, with the center of impact close to the city of Chicxulub, which has given the crater its name. Long-buried under sediment, the Chicxulub crater had actually been discovered in 1981 by oil geologists, but dates of nearby rock samples taken at that time suggested that it was significantly older than 65 million years. New deepwater samples of melted rock from the crater itself were recently analyzed by an advanced dating process, however, and were found to be 64.98 million years old. Many scientists now feel that, thanks to the Alvarez theory, the mystery of dinosaur extinction has finally been solved.</span></p>"}, "birds": {"label": "Bird Courtship", "html": "<h3 class=\"ptitle\">Bird Courtship Behavior</h3><p class=\"ppara\"><span class=\"pnum\">1</span><span>Since there are thousands of species of birds in the natural world and many of these species tend to congregate in the same habitats, nearly every species has its own special courtship procedures and &ldquo;identification checks.&rdquo; Identification checks allow birds to ensure that they are mating with members of their own species. Identification checks are important because if members of different species mate, the offspring are often sterile or badly adapted to their surroundings. Once the species of a potential partner is confirmed, courtship rituals enable birds to assess the quality of their mates.</span></p><p class=\"ppara\"><span class=\"pnum\">2</span><span>For many bird species, plumage plays a key role in both identification and courtship. During breeding season, male birds acquire distinctive plumage that they use to attract females, and the females respond only to males with the correct markings. The most striking example of such plumage is the magnificently colored head, chest, and tail feathers of the male bird of paradise. When attempting to attract a mate, the male perches on a branch and then gradually leans forward until he is hanging upside down, covered with his own brilliant feathers. A female bird of paradise will watch the display and then respond. Scientists refer to the bird displaying the plumage as the &ldquo;actor,&rdquo; while the bird that observes is the &ldquo;reactor.&rdquo; Although the male is the actor and the female is the reactor in the case of birds of paradise, the females of some species are more brightly colored than the males, and the courtship roles are reversed.</span></p><p class=\"ppara\"><span class=\"pnum\">3</span><span>Distinctive behavioral changes can also be important aspects of courtship and breeding activity. Aggressiveness among males, and sometimes among females, is quite common. Some birds, such as whooping cranes and trumpeter swans, perform wonderfully elaborate courtship dances in which both sexes are enthusiastic participants. The purpose of the dance is to establish and maintain a &ldquo;pair bond&rdquo; that will last between the male and female through the period of the reproductive season, or at least until the nesting has been completed. Each species has its own set of inherited courtship behaviors, which also helps prevent mating between birds of different species.</span></p><p class=\"ppara\"><span class=\"pnum\">4</span><span>Bird calls are another key part of identification between individuals in a given species. When a female migrates to her breeding region in the spring, she often encounters numerous birds of different species. The males of her species identify themselves by their singing and communicate to her that they are in breeding condition. This information allows the female to predict the response of a male to her approach. Later, after mating has taken place, the note patterns of a particular male&rsquo;s song enable the nesting female to continue to identify her partner.</span></p><p class=\"ppara\"><span class=\"pnum\">5</span><span>Nature lovers do not need to travel to exotic lands to see these fascinating rituals take place. The northern cardinal, a common sight in the eastern and midwestern United States, is an excellent example of a territorial bird. Males perch on tall trees and sing high-pitched, piercing notes to announce that the surrounding area is their territory. They are so aggressive about defending it that they will sometimes mistake their reflection in a window or car as an invading male and attempt to fight it. During courtship, a male will feed a female, placing the food directly into her beak. Cardinals usually mate for life, and pairs will often sing to each other at dusk. Once the chicks have hatched, both parents help feed them, and the male listens carefully for their unique fledgling calls.</span></p><p class=\"ppara\"><span class=\"pnum\">6</span><span>The American goldfinch is another common bird with spectacular courtship behaviors. When a male is ready to mate, he will actually chase the prospective female. The female attempts to outmaneuver him by flying in zig-zag patterns, and the male signals his fitness and worthiness as a mate by matching her move for move. Once the two birds are pair-bonded, the male will establish his territory by flying from tree to tree, singing a unique warbling song as he goes. He will circle the perimeter twice: once in a low, flat flight and again in a &ldquo;daredevil&rdquo; display involving abrupt drops to the ground and loops. While the female sits on the eggs, the male brings her food, and both parents feed the chicks once they have hatched. These displays and rituals illustrate how complex behavior can emerge from the most primitive of biological needs&mdash;reproduction.</span></p><figure class=\"pfig\"><svg viewBox=\"0 0 421 442\" width=\"421\" height=\"442\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" fill=\"#1a2433\"><text x=\"210.5\" y=\"22\" text-anchor=\"middle\" font-size=\"15.5\" font-weight=\"700\">Avian Identification Behaviors</text><circle cx=\"210.5\" cy=\"174\" r=\"130\" fill=\"#d6e3f1\" fill-opacity=\".5\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><circle cx=\"137.754\" cy=\"300\" r=\"130\" fill=\"#dfe9f4\" fill-opacity=\".5\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><circle cx=\"283.246\" cy=\"300\" r=\"130\" fill=\"#cfdeee\" fill-opacity=\".5\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><text x=\"210.5\" y=\"109.7\" text-anchor=\"middle\" font-size=\"13.5\" font-weight=\"700\" letter-spacing=\".04em\">PLUMAGE</text><text x=\"210.5\" y=\"124.9\" text-anchor=\"middle\" font-size=\"12.5\">Ex. Scarlet-tufted</text><text x=\"210.5\" y=\"140.4\" text-anchor=\"middle\" font-size=\"12.5\">malachite sunbird</text><text x=\"83.8\" y=\"315.7\" text-anchor=\"middle\" font-size=\"13.5\" font-weight=\"700\" letter-spacing=\".04em\">SONG</text><text x=\"83.8\" y=\"330.9\" text-anchor=\"middle\" font-size=\"12.5\">Ex. Purple-crowned</text><text x=\"83.8\" y=\"346.4\" text-anchor=\"middle\" font-size=\"12.5\">fairywren</text><text x=\"337.5\" y=\"323.7\" text-anchor=\"middle\" font-size=\"13.5\" font-weight=\"700\" letter-spacing=\".04em\">DANCE</text><text x=\"337.5\" y=\"338.9\" text-anchor=\"middle\" font-size=\"12.5\">Ex. Whooping crane</text><text x=\"135.5\" y=\"220.4\" text-anchor=\"middle\" font-size=\"12.5\">Ex. Peafowl</text><text x=\"285.0\" y=\"212.4\" text-anchor=\"middle\" font-size=\"12.5\">Ex. Bird of</text><text x=\"285.0\" y=\"227.9\" text-anchor=\"middle\" font-size=\"12.5\">paradise</text><text x=\"210.5\" y=\"338.4\" text-anchor=\"middle\" font-size=\"12.5\">Ex. Trumpeter</text><text x=\"210.5\" y=\"353.9\" text-anchor=\"middle\" font-size=\"12.5\">swan</text><text x=\"210.5\" y=\"262.4\" text-anchor=\"middle\" font-size=\"12.5\">Ex. Lyrebird</text></svg></figure>"}, "poem": {"label": "In Time", "html": "<h3 class=\"ptitle\">In Time</h3><div class=\"byline\">by Tara Hurley</div><div class=\"stanza\"><div class=\"pline\"><span class=\"lnum\"></span><span>Each morning, I am greeted by a familiar friend</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Poised outside my window, reaching out to greet me,</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Its fingers gently brushing the window pane.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>A Hawthorn tree, strong yet graceful,</span></div><div class=\"pline\"><span class=\"lnum\">5</span><span>Stretches as high as my Brooklyn home.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Its wide embrace welcomes me each morning</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>As I open the curtains and gaze out at the day.</span></div><div class=\"stanzagap\"></div><div class=\"pline\"><span class=\"lnum\"></span><span>In spring, small birds flutter amongst its branches.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>They appear as specks of blue and black,</span></div><div class=\"pline\"><span class=\"lnum\">10</span><span>Peering through lush blooms of soft white petals.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Their song, delicate and sweet, cheers me,</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>As they flit from branch to branch, giddy to be alive.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>The flowers gently fall to the ground, one by one;</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>They coat the sidewalk below, forming a carpet of white.</span></div><div class=\"stanzagap\"></div><div class=\"pline\"><span class=\"lnum\">15</span><span>In summer, the white blossoms give way to a shock of green,</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>The bright blue sky peeking through the vibrant foliage.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>The fierce summer sun streams down from above;</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>It glints off each emerald leaf, each one so full of life.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>The relief of a gentle breeze whispers secrets through the leaves</span></div><div class=\"pline\"><span class=\"lnum\">20</span><span>And children, playing in the streets, follow the sound</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>And find shelter in the coolness of the shade.</span></div><div class=\"stanzagap\"></div><div class=\"pline\"><span class=\"lnum\"></span><span>In fall, the leaves transform as if catching fire</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Into shades of bright flame, gold and crimson.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Each day, the sight of it outside my window</span></div><div class=\"pline\"><span class=\"lnum\">25</span><span>Stirs a feeling of awe and wonder in my chest.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Leaves fall, one by one, like a slow and fiery rain,</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Leaving empty branches behind, framed by indigo sky.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Squirrels race up and down the trunk, stashing away</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Treasures in preparation for the growing chill.</span></div><div class=\"stanzagap\"></div><div class=\"pline\"><span class=\"lnum\">30</span><span>In winter, the sight outside my window is haunting.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Bare branches stab the still, gray air, crossing and</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>Tangling with one another in a barren nest of twigs.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>No sign of life holds on&mdash;no petal, no leaf, no trace of color.</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>The birds have fled south; the squirrels are hidden away.</span></div><div class=\"pline\"><span class=\"lnum\">35</span><span>All is still, until one morning, when I peel back the curtains</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>And spot a fresh green bud emerging at the end of a branch,</span></div><div class=\"pline\"><span class=\"lnum\"></span><span>And I know it will begin all over again.</span></div></div>"}, "roosevelt": {"label": "Conservation", "html": "<h3 class=\"ptitle\">Excerpt from &ldquo;Conservation as a National Duty&rdquo;</h3><div class=\"byline\">by Theodore Roosevelt</div><p class=\"pintro\">In 1908, President Theodore Roosevelt addressed a gathering of state governors and other officials at the White House Conference on the Conservation of Natural Resources. The conference brought together leaders to discuss the nation&rsquo;s land, forests, waterways, and other natural resources. In this excerpt from his speech, Roosevelt reflects on the nation&rsquo;s development and considers its future.</p><p class=\"ppara\"><span class=\"pnum\">1</span><span>Disregarding for the moment the question of moral purpose, it is safe to say that the prosperity of our people depends directly on the energy and intelligence with which our natural resources are used. It is equally clear that these resources are the final basis of national power and perpetuity<sup>1</sup>. Finally, it is ominously evident that these resources are in the course of rapid exhaustion.</span></p><p class=\"ppara\"><span class=\"pnum\">2</span><span>This Nation began with the belief that its landed possessions were illimitable and capable of supporting all the people who might care to make our country their home; but already the limit of unsettled land is in sight, and indeed but little land fitted for agriculture now remains unoccupied save what can be reclaimed by irrigation and drainage&mdash;a subject with which this Conference is partly to deal. We began with an unapproached heritage of forests; more than half of the timber is gone. We began with coal fields more extensive than those of any other nation and with iron ores regarded as inexhaustible, and many experts now declare that the end of both iron and coal is in sight.</span></p><p class=\"ppara\"><span class=\"pnum\">3</span><span>The mere increase in our consumption of coal during 1907 over 1906 exceeded the total consumption in 1876, the Centennial year<sup>2</sup>. This is a striking fact: Thirty years went by, and the mere surplus of use of one year over the preceding year exceeded all that was used in 1876&mdash;and we thought we were pretty busy people even then. The enormous stores of mineral oil and gas are largely gone; and those Governors who have in their States cities built up by natural gas, where the natural gas has since been exhausted, can tell us something of what that means. Our natural waterways are not gone, but they have been so injured by neglect, and by the division of responsibility and utter lack of system in dealing with them, that there is less navigation on them now than there was fifty years ago. Finally, we began with soils of unexampled fertility, and we have so impoverished them by injudicious<sup>3</sup> use and by failing to check erosion that their crop-producing power is diminishing instead of increasing. In a word, we have thoughtlessly, and to a large degree unnecessarily, diminished the resources upon which not only our prosperity but the prosperity of our children and our children&rsquo;s children must always depend.</span></p><p class=\"ppara\"><span class=\"pnum\">4</span><span>We have become great in a material sense because of the lavish use of our resources, and we have just reason to be proud of our growth. But the time has come to inquire seriously what will happen when our forests are gone, when the coal, the iron, the oil, and the gas are exhausted, when the soils shall have been still further impoverished and washed into the streams, polluting the rivers, denuding<sup>4</sup> the fields, and obstructing navigation. These questions do not relate only to the next century or to the next generation. One distinguishing characteristic of really civilized men is foresight; we have to, as a nation, exercise foresight for this nation in the future; and if we do not exercise that foresight, dark will be the future! We should exercise foresight now, as the ordinarily prudent man exercises foresight in conserving and wisely using the property which contains the assurance of well-being for himself and his children. We want to see a man own his farm rather than rent it, because we want to see it an object to him to transfer it in better order to his children. We want to see him exercise forethought for the next generation. We need to exercise it in some fashion ourselves as a nation for the next generation.</span></p><p class=\"pnote\"><sup>1</sup>perpetuity: continued existence indefinitely</p><p class=\"pnote\"><sup>2</sup>Centennial year: 1876, the 100th anniversary of American independence</p><p class=\"pnote\"><sup>3</sup>injudicious: showing poor judgment; unwise</p><p class=\"pnote\"><sup>4</sup>denuding: stripping something of its covering</p>"}, "barber": {"label": "From Barber to Surgeon", "html": "<h3 class=\"ptitle\">From Barber to Surgeon</h3><p class=\"ppara\"><span class=\"pnum\">1</span><span>Barbers and surgeons have a lot of things in common. Although some members of the medical profession would like to ignore the connection, it is too true to be omitted from the pages of history. Being a barber is an old profession. In the distant past, the art of surgery and the trade of barber were combined. In all parts of the ancient civilized world, the barber acted as a kind of surgeon. He practiced phlebotomy, the art of blood-letting, and he dressed wounds.</span></p><p class=\"ppara\"><span class=\"pnum\">2</span><span>Until the twelfth century, religious people took care of men&rsquo;s bodies as well as their souls. Monks practiced surgery and medicine. Barbers learned a lot from the monks, whom they assisted in surgical operations. The practice of surgery involved the shedding of blood. Monks felt that this practice did not suit the functions of the clergy. After much discussion, in 1163, the clergy were forbidden to act as surgeons, but they were allowed to provide medicine. That same year, the Pope issued an important decree about religious pilgrimages.</span></p><p class=\"ppara\"><span class=\"pnum\">3</span><span>The new law satisfied the barbers, and they quickly took advantage of the opportunities now available to them. In London, the barbers advertised their blood-letting by putting blood in their windows to attract the attention of the public. This practice upset people, so a new law was passed eventually, telling the barbers in London to pour the blood somewhere else.</span></p><p class=\"ppara\"><span class=\"pnum\">4</span><span>Eventually, the barbers in London grouped together to form a guild. At first, its purpose was for social interaction only. Later, it became more like a trade union. As time progressed, the London Company of Barbers increased in importance. A change of title occurred in 1540, and the barbers were then called the Company of Barber-Surgeons. Although the surgeons and the barbers were separated by Act of Parliament in 1745, the barber-surgeons continued to practice for a long time.</span></p>"}}, "textOrder": ["speckled", "chainmail", "asteroid", "birds", "poem", "roosevelt", "barber"], "figs": {"prop_graph": "<div class=\"fig\"><svg viewBox=\"0 0 350 258\" width=\"350\" height=\"258\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#1a2433\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"56\" y1=\"20\" x2=\"56\" y2=\"210\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"56\" y=\"227\" text-anchor=\"middle\" font-size=\"11\" >0</text><line x1=\"118.5\" y1=\"20\" x2=\"118.5\" y2=\"210\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"118.5\" y=\"227\" text-anchor=\"middle\" font-size=\"11\" >2</text><line x1=\"181\" y1=\"20\" x2=\"181\" y2=\"210\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"181\" y=\"227\" text-anchor=\"middle\" font-size=\"11\" >4</text><line x1=\"243.5\" y1=\"20\" x2=\"243.5\" y2=\"210\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"243.5\" y=\"227\" text-anchor=\"middle\" font-size=\"11\" >6</text><line x1=\"306\" y1=\"20\" x2=\"306\" y2=\"210\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"306\" y=\"227\" text-anchor=\"middle\" font-size=\"11\" >8</text><line x1=\"56\" y1=\"210\" x2=\"306\" y2=\"210\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"46\" y=\"214\" text-anchor=\"end\" font-size=\"11\" >0</text><line x1=\"56\" y1=\"162.5\" x2=\"306\" y2=\"162.5\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"46\" y=\"166.5\" text-anchor=\"end\" font-size=\"11\" >14</text><line x1=\"56\" y1=\"115\" x2=\"306\" y2=\"115\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"46\" y=\"119\" text-anchor=\"end\" font-size=\"11\" >28</text><line x1=\"56\" y1=\"67.5\" x2=\"306\" y2=\"67.5\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"46\" y=\"71.5\" text-anchor=\"end\" font-size=\"11\" >42</text><line x1=\"56\" y1=\"20\" x2=\"306\" y2=\"20\" stroke=\"#1a2433\" stroke-width=\"0.6\"/><text x=\"46\" y=\"24\" text-anchor=\"end\" font-size=\"11\" >56</text><line x1=\"56\" y1=\"20\" x2=\"56\" y2=\"210\" stroke=\"#1a2433\" stroke-width=\"1.5\"/><line x1=\"56\" y1=\"210\" x2=\"306\" y2=\"210\" stroke=\"#1a2433\" stroke-width=\"1.5\"/><line x1=\"56\" y1=\"210\" x2=\"306\" y2=\"20\" stroke=\"#1a2433\" stroke-width=\"1.9\"/><circle cx=\"181\" cy=\"115\" r=\"4.2\" fill=\"#1a2433\"/><text x=\"190\" y=\"106\" text-anchor=\"start\" font-size=\"12\" >(4, 28)</text><text x=\"181\" y=\"246\" text-anchor=\"middle\" font-size=\"12\" >Hours</text><text x=\"16\" y=\"115\" font-size=\"12\" text-anchor=\"middle\" transform=\"rotate(-90 16 115)\">Liters</text></svg></div>", "boxplot_n": "<div class=\"fig\"><svg viewBox=\"0 0 470 238\" width=\"470\" height=\"238\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#1a2433\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"141.4\" y=\"78\" width=\"133.2\" height=\"60\" fill=\"#eef2f7\" stroke=\"#1a2433\" stroke-width=\"1.8\"/><line x1=\"208\" y1=\"78\" x2=\"208\" y2=\"138\" stroke=\"#1a2433\" stroke-width=\"2.4\"/><line x1=\"82.2\" y1=\"108\" x2=\"141.4\" y2=\"108\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><line x1=\"274.6\" y1=\"108\" x2=\"407.8\" y2=\"108\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><line x1=\"82.2\" y1=\"87\" x2=\"82.2\" y2=\"129\" stroke=\"#1a2433\" stroke-width=\"2\"/><line x1=\"407.8\" y1=\"87\" x2=\"407.8\" y2=\"129\" stroke=\"#1a2433\" stroke-width=\"2\"/><line x1=\"46\" y1=\"172\" x2=\"444\" y2=\"172\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><line x1=\"60\" y1=\"172\" x2=\"60\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"60\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >15</text><line x1=\"97\" y1=\"172\" x2=\"97\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"97\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >20</text><line x1=\"134\" y1=\"172\" x2=\"134\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"134\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >25</text><line x1=\"171\" y1=\"172\" x2=\"171\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"171\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >30</text><line x1=\"208\" y1=\"172\" x2=\"208\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"208\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >35</text><line x1=\"245\" y1=\"172\" x2=\"245\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"245\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >40</text><line x1=\"282\" y1=\"172\" x2=\"282\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"282\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >45</text><line x1=\"319\" y1=\"172\" x2=\"319\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"319\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >50</text><line x1=\"356\" y1=\"172\" x2=\"356\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"356\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >55</text><line x1=\"393\" y1=\"172\" x2=\"393\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"393\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >60</text><line x1=\"430\" y1=\"172\" x2=\"430\" y2=\"179\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"430\" y=\"198\" text-anchor=\"middle\" font-size=\"15\" >65</text><text x=\"245\" y=\"224\" text-anchor=\"middle\" font-size=\"15\" >Minutes of practice</text></svg></div>", "plate": "<div class=\"fig\"><svg viewBox=\"0 0 350 180\" width=\"350\" height=\"180\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#1a2433\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"95\" y=\"24\" width=\"112\" height=\"112\" fill=\"#b9c4d1\" stroke=\"#1a2433\" stroke-width=\"1.7\"/><circle cx=\"151\" cy=\"80\" r=\"42\" fill=\"#fff\" stroke=\"#1a2433\" stroke-width=\"1.7\"/><line x1=\"109\" y1=\"80\" x2=\"193\" y2=\"80\" stroke=\"#1a2433\" stroke-width=\"1.1\"/><text x=\"151\" y=\"73\" text-anchor=\"middle\" font-size=\"13\" >3 in.</text><line x1=\"95\" y1=\"152\" x2=\"207\" y2=\"152\" stroke=\"#1a2433\" stroke-width=\"1.1\"/><text x=\"151\" y=\"168\" text-anchor=\"middle\" font-size=\"13\" >4 in.</text></svg></div>", "right_triangle": "<div class=\"fig\"><svg viewBox=\"0 0 380 230\" width=\"380\" height=\"230\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#1a2433\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"118,26 118,206 311.026,206\" fill=\"#eef2f7\" stroke=\"#1a2433\" stroke-width=\"1.8\"/><rect x=\"118\" y=\"192\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.3\"/><path d=\"M 118 56 A 30 30 0 0 0 139.941 46.46\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"153.887\" y=\"113.535\" text-anchor=\"middle\" font-size=\"14\" >(2x + 9)&deg;</text><path d=\"M 289.086 185.54 A 30 30 0 0 0 281.026 206\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"222.637\" y=\"176.182\" text-anchor=\"middle\" font-size=\"14\" >(3x &minus; 14)&deg;</text></svg></div>", "circle_radius": "<div class=\"fig\"><svg viewBox=\"0 0 370 253.2\" width=\"370\" height=\"253.2\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#1a2433\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"182\" cy=\"118\" r=\"91.2\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.7\"/><line x1=\"90.8\" y1=\"118\" x2=\"273.2\" y2=\"118\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><line x1=\"212.4\" y1=\"118\" x2=\"212.4\" y2=\"32.0158\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><line x1=\"182\" y1=\"118\" x2=\"212.4\" y2=\"32.0158\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><rect x=\"201.4\" y=\"107\" width=\"11\" height=\"11\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.2\"/><circle cx=\"182\" cy=\"118\" r=\"3\" fill=\"#1a2433\"/><text x=\"176\" y=\"133\" text-anchor=\"middle\" font-size=\"13\" >P</text><circle cx=\"212.4\" cy=\"32.0158\" r=\"3\" fill=\"#1a2433\"/><text x=\"220.4\" y=\"26.0158\" text-anchor=\"middle\" font-size=\"13\" >S</text><circle cx=\"90.8\" cy=\"118\" r=\"3\" fill=\"#1a2433\"/><text x=\"77.8\" y=\"114\" text-anchor=\"middle\" font-size=\"13\" >R</text><circle cx=\"273.2\" cy=\"118\" r=\"3\" fill=\"#1a2433\"/><text x=\"285.2\" y=\"114\" text-anchor=\"middle\" font-size=\"13\" >T</text><circle cx=\"212.4\" cy=\"118\" r=\"3\" fill=\"#1a2433\"/><text x=\"223.4\" y=\"134\" text-anchor=\"middle\" font-size=\"13\" >Q</text><text x=\"185.2\" y=\"80.0079\" text-anchor=\"end\" font-size=\"13\" >12</text><line x1=\"90.8\" y1=\"152\" x2=\"212.4\" y2=\"152\" stroke=\"#1a2433\" stroke-width=\"1.1\"/><line x1=\"90.8\" y1=\"147\" x2=\"90.8\" y2=\"157\" stroke=\"#1a2433\" stroke-width=\"1.1\"/><line x1=\"212.4\" y1=\"147\" x2=\"212.4\" y2=\"157\" stroke=\"#1a2433\" stroke-width=\"1.1\"/><text x=\"151.6\" y=\"170\" text-anchor=\"middle\" font-size=\"13\" font-style=\"italic\">x</text><line x1=\"212.4\" y1=\"152\" x2=\"273.2\" y2=\"152\" stroke=\"#1a2433\" stroke-width=\"1.1\"/><line x1=\"212.4\" y1=\"147\" x2=\"212.4\" y2=\"157\" stroke=\"#1a2433\" stroke-width=\"1.1\"/><line x1=\"273.2\" y1=\"147\" x2=\"273.2\" y2=\"157\" stroke=\"#1a2433\" stroke-width=\"1.1\"/><text x=\"242.8\" y=\"170\" text-anchor=\"middle\" font-size=\"13\" >8</text></svg></div>", "transversal_n": "<div class=\"fig\"><svg viewBox=\"0 0 350 206\" width=\"350\" height=\"206\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#1a2433\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"28\" y1=\"58\" x2=\"300\" y2=\"58\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><line x1=\"28\" y1=\"140\" x2=\"300\" y2=\"140\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><line x1=\"88\" y1=\"14\" x2=\"238\" y2=\"184\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><text x=\"314\" y=\"63\" text-anchor=\"start\" font-size=\"15\" font-style=\"italic\">j</text><text x=\"314\" y=\"145\" text-anchor=\"start\" font-size=\"15\" font-style=\"italic\">k</text><path d=\"M 247.8 51 L 255.5 58 L 247.8 65\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><path d=\"M 247.8 133 L 255.5 140 L 247.8 147\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><path d=\"M 143.998 76.7403 A 24.64 24.64 0 0 0 152.64 58\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"167.956\" y=\"81.4259\" text-anchor=\"middle\" font-size=\"14\" >58&deg;</text><path d=\"M 217.04 140 A 19.04 19.04 0 0 0 185.638 125.519\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"212.238\" y=\"114.125\" text-anchor=\"middle\" font-size=\"14\" >W</text></svg></div>", "isosceles_chain": "<div class=\"fig\"><svg viewBox=\"0 0 340 334\" width=\"340\" height=\"334\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#1a2433\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"166,43.3192 80,308 252,308\" fill=\"#eef2f7\" stroke=\"#1a2433\" stroke-width=\"1.8\"/><line x1=\"80\" y1=\"308\" x2=\"219.151\" y2=\"206.901\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><line x1=\"195.607\" y1=\"121.496\" x2=\"187.999\" y2=\"123.969\" stroke=\"#1a2433\" stroke-width=\"1.5\"/><line x1=\"197.152\" y1=\"126.252\" x2=\"189.544\" y2=\"128.724\" stroke=\"#1a2433\" stroke-width=\"1.5\"/><line x1=\"153.949\" y1=\"259.217\" x2=\"149.247\" y2=\"252.745\" stroke=\"#1a2433\" stroke-width=\"1.5\"/><line x1=\"149.904\" y1=\"262.156\" x2=\"145.202\" y2=\"255.684\" stroke=\"#1a2433\" stroke-width=\"1.5\"/><line x1=\"163.5\" y1=\"304\" x2=\"163.5\" y2=\"312\" stroke=\"#1a2433\" stroke-width=\"1.5\"/><line x1=\"168.5\" y1=\"304\" x2=\"168.5\" y2=\"312\" stroke=\"#1a2433\" stroke-width=\"1.5\"/><path d=\"M 157.966 68.0467 A 26 26 0 0 0 174.034 68.0467\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.4\"/><text x=\"166\" y=\"98.3192\" text-anchor=\"middle\" font-size=\"14\" ><tspan font-style='italic'>x</tspan>&deg;</text><circle cx=\"166\" cy=\"43.3192\" r=\"3.2\" fill=\"#1a2433\"/><text x=\"166\" y=\"30.3192\" text-anchor=\"middle\" font-size=\"14\" >A</text><circle cx=\"80\" cy=\"308\" r=\"3.2\" fill=\"#1a2433\"/><text x=\"65\" y=\"315\" text-anchor=\"middle\" font-size=\"14\" >B</text><circle cx=\"252\" cy=\"308\" r=\"3.2\" fill=\"#1a2433\"/><text x=\"267\" y=\"315\" text-anchor=\"middle\" font-size=\"14\" >C</text><circle cx=\"219.151\" cy=\"206.901\" r=\"3.2\" fill=\"#1a2433\"/><text x=\"234.151\" y=\"211.901\" text-anchor=\"middle\" font-size=\"14\" >D</text></svg></div>", "similar_mpr": "<div class=\"fig\"><svg viewBox=\"0 0 350 192\" width=\"350\" height=\"192\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Georgia,serif\" font-size=\"15\" fill=\"#1a2433\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"52,168 226,56 300,168\" fill=\"none\" stroke=\"#1a2433\" stroke-width=\"1.8\"/><line x1=\"152.92\" y1=\"103.04\" x2=\"257.08\" y2=\"103.04\" stroke=\"#1a2433\" stroke-width=\"1.6\"/><text x=\"39\" y=\"174\" text-anchor=\"middle\" font-size=\"13\" >M</text><text x=\"311\" y=\"174\" text-anchor=\"middle\" font-size=\"13\" >R</text><text x=\"231\" y=\"47\" text-anchor=\"middle\" font-size=\"13\" >P</text><text x=\"139.92\" y=\"105.04\" text-anchor=\"middle\" font-size=\"13\" >N</text><text x=\"269.08\" y=\"105.04\" text-anchor=\"middle\" font-size=\"13\" >Q</text><text x=\"89.46\" y=\"139.52\" text-anchor=\"middle\" font-size=\"13\" font-style=\"italic\">x</text><text x=\"187.46\" y=\"71.52\" text-anchor=\"middle\" font-size=\"12\" >6 cm</text><text x=\"205\" y=\"94.04\" text-anchor=\"middle\" font-size=\"12\" >12 cm</text></svg></div>"}};
+var STORE = "shsat_combined_v1";
+
+var queue = [], idx = 0, answers = {}, pending = null, elapsed = 0;
+var elim = {};      // elim[key] = "AC" : choices the student crossed out
+var paneReset = false;   // true for one render when the passage pane should go to top
+var clickY = null;       // page scroll as it was BEFORE the browser focused a button
+
+// A click focuses the button, and the browser scrolls that button into view before
+// any click handler runs. Snapshot the real position on mousedown, which fires first.
+document.addEventListener("mousedown", function(){
+  clickY = window.pageYOffset || document.documentElement.scrollTop || 0;
+}, true);
+document.addEventListener("touchstart", function(){
+  clickY = window.pageYOffset || document.documentElement.scrollTop || 0;
+}, true);
+var held = null;    // token picked up on a drag-table item
+var plan = null;    // "full" or "one"
+var startWith = null;
+var mode = "start", ticker = null, viewText = null, secStart = 0;
+
+var app = document.getElementById("app");
+var bar = document.getElementById("bar");
+var track = document.getElementById("track");
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function fmt(sec){
+  var h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
+  return h+":"+(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+}
+function key(it){ return it.sec + "-" + it.n; }
+// A "set" is a run of consecutive items sharing a grp (one passage's
+// questions).  Items without a grp are their own set -> forward-only.
+function grpKey(it){ return it.sec + "/" + (it.grp ? it.grp : "@" + it.n); }
+function setBounds(i){
+  var g=grpKey(queue[i]), a=i, b=i;
+  while (a>0 && grpKey(queue[a-1])===g) a--;
+  while (b<queue.length-1 && grpKey(queue[b+1])===g) b++;
+  return [a,b];
+}
+function setBlanks(a,b){
+  var c=0;
+  for (var i=a;i<=b;i++){
+    var v = (i===idx ? pending : answers[key(queue[i])]);
+    if (!v) c++;
+  }
+  return c;
+}
+function norm(v){
+  return String(v == null ? "" : v).trim()
+    .replace(/&minus;/g,"-").replace(/\u2212/g,"-").replace(/[$,%\s]/g,"");
+}
+function same(a, b){
+  var x = norm(a), y = norm(b);
+  if (!x) return false;
+  if (x === y) return true;
+  var fx = parseFloat(x), fy = parseFloat(y);
+  return !isNaN(fx) && !isNaN(fy) && Math.abs(fx - fy) < 1e-9;
+}
+
+/* ------------------------------------------------------------ answer helpers */
+function blankFor(it){
+  if (it.type === "rowtable") return new Array(it.rows.length + 1).join("-");
+  if (it.type === "dropdown") return new Array(it.parts.length + 1).join("-");
+  if (it.type === "dragtable"){
+    var a = []; for (var i = 0; i < it.correct.length; i++) a.push("");
+    return a.join("|");
+  }
+  return "";
+}
+function parts(a, it){
+  var s = (a == null || a === "") ? blankFor(it) : String(a);
+  return it.type === "dragtable" ? s.split("|") : s.split("");
+}
+function letters(it){ return (it.n % 2 || it.sec === "math") ? "ABCDE" : "EFGHI"; }
+function normExpr(v){
+  return String(v == null ? "" : v)
+    .replace(/≤/g,"<=").replace(/≥/g,">=")
+    .replace(/−|–|—/g,"-")
+    .replace(/×|·|∙/g,"*").replace(/÷/g,"/")
+    .replace(/\s+/g,"").toLowerCase();
+}
+function checkAnswer(it, a){
+  if (a == null || a === "") return false;
+  var L = letters(it);
+  switch (it.type){
+    case "multi": {
+      var want = it.ais.map(function(i){ return L.charAt(i); }).sort().join("");
+      return String(a).split("").sort().join("") === want;
+    }
+    case "rowtable":  return String(a) === it.correct.join("");
+    case "dropdown":  return String(a) === it.parts.map(function(p){return String(p[2]);}).join("");
+    case "dragtable": return String(a) === it.correct.join("|");
+    case "expr": {
+      var got = normExpr(a);
+      for (var i = 0; i < it.ans.length; i++){ if (normExpr(it.ans[i]) === got) return true; }
+      return false;
+    }
+    case "num": {
+      var x = parseFloat(norm(a)), y = parseFloat(norm(it.ans));
+      if (isNaN(x) || isNaN(y)) return norm(a) === norm(it.ans);
+      return Math.abs(x - y) <= (it.tol || 1e-9);
+    }
+    default: return String(a) === L.charAt(it.ai);
+  }
+}
+function stripTags(s){
+  return String(s).replace(/<[^>]+>/g,"").replace(/&minus;/g,"−")
+                  .replace(/&nbsp;/g," ").replace(/&amp;/g,"&");
+}
+function keyText(it){
+  var L = letters(it);
+  switch (it.type){
+    case "multi":     return it.ais.map(function(i){ return L.charAt(i); }).join(", ");
+    case "rowtable":  return it.correct.map(function(c){ return it.cols[c]; }).join(" / ");
+    case "dropdown":  return it.parts.map(function(p){ return stripTags(p[1][p[2]]); }).join(" / ");
+    case "dragtable": return it.correct.join(", ");
+    case "expr":      return it.ans[0];
+    case "num":       return it.ans;
+    default:          return L.charAt(it.ai);
+  }
+}
+function youText(it, a){
+  if (a == null || a === "" || a === blankFor(it)) return "";
+  switch (it.type){
+    case "rowtable":
+      return parts(a,it).map(function(c){ return c==="-"?"—":it.cols[+c]; }).join(" / ");
+    case "dropdown":
+      return parts(a,it).map(function(c,i){
+        return c==="-"?"—":stripTags(it.parts[i][1][+c]); }).join(" / ");
+    case "dragtable":
+      return parts(a,it).map(function(t){ return t===""?"—":t; }).join(", ");
+    case "multi": return String(a).split("").sort().join(", ");
+    default:      return String(a);
+  }
+}
+function hasAnswer(it, a){
+  if (a == null || a === "") return false;
+  if (it.type === "rowtable" || it.type === "dropdown") return String(a).indexOf("-") === -1;
+  if (it.type === "dragtable") return parts(a,it).every(function(t){ return t !== ""; });
+  return !!norm(a);
+}
+
+function answered(){
+  var c=0;
+  queue.forEach(function(it){ if (hasAnswer(it, answers[key(it)])) c++; });
+  return c;
+}
+
+function ask(head, msg, yesLabel, onYes){
+  var m=document.getElementById("modal");
+  document.getElementById("modal-h").textContent=head;
+  document.getElementById("modal-p").textContent=msg;
+  var yes=document.getElementById("modal-yes"), no=document.getElementById("modal-no");
+  yes.textContent=yesLabel; m.hidden=false; yes.focus();
+  function close(){ m.hidden=true; yes.onclick=null; no.onclick=null; }
+  yes.onclick=function(){ close(); onYes(); };
+  no.onclick=close;
+}
+
+function save(){
+  try{ localStorage.setItem(STORE, JSON.stringify(
+    {idx:idx, answers:answers, elim:elim, hl:HL, elapsed:elapsed, mode:mode,
+     secs:queue.length?uniqSecs():null})); }catch(e){}
+}
+function uniqSecs(){
+  var out=[]; queue.forEach(function(i){ if(out.indexOf(i.sec)<0) out.push(i.sec); }); return out;
+}
+function wipe(){ try{ localStorage.removeItem(STORE); }catch(e){} }
+function tick(){ elapsed++; if (elapsed % 15 === 0) save(); }
+function startTicker(){ if(ticker) clearInterval(ticker); ticker=setInterval(tick,1000); }
+function stopTicker(){ if(ticker){ clearInterval(ticker); ticker=null; } }
+
+function secOf(k){
+  for (var i=0;i<DATA.sections.length;i++) if (DATA.sections[i].key===k) return DATA.sections[i];
+  return null;
+}
+
+/* ---------- text lock state ---------- */
+function lastIdxOfText(tk){
+  var last=-1;
+  for (var i=0;i<queue.length;i++) if (queue[i].text===tk) last=i;
+  return last;
+}
+function textState(tk){
+  var li=lastIdxOfText(tk);
+  if (li<0) return "none";
+  if (idx>li) return "done";
+  var cur=queue[idx];
+  if (cur && cur.text===tk) return "current";
+  return "future";
+}
+
+function paintChrome(){
+  var showing = (mode==="test");
+  bar.hidden=!showing; track.hidden=!showing;
+  if(!showing) return;
+  var it=queue[idx];
+  document.getElementById("secname").textContent = "· " + secOf(it.sec).label;
+  var secItems=queue.filter(function(q){return q.sec===it.sec;});
+  var done=secItems.filter(function(q){return !!answers[key(q)];}).length;
+  document.getElementById("count").textContent = done+" of "+secItems.length+" answered";
+  document.getElementById("trackbar").style.width = ((idx/queue.length)*100)+"%";
+}
+
+/* ---------- screens ---------- */
+function screenStart(){
+  var paper = '<div class="paper"><b>Record your answers on paper as you go.</b> Write the '+
+    'question number and your answer for every question. If the page closes, the browser '+
+    'crashes, or the device restarts, your paper record is what lets you pick up where you '+
+    'left off.</div>';
+
+  if (plan === null){
+    return '<div class="wrap"><div class="card">'+
+      '<h1>SHSAT Practice Test</h1>'+
+      '<p class="lede">One hundred questions: fifty English Language Arts and fifty '+
+        'Mathematics. Untimed.</p>'+
+      '<h2>What would you like to take?</h2>'+
+      '<div class="picks">'+
+        '<button class="pick" data-plan="full"><b>The full test</b>'+
+          '<span>Both sections, 100 questions, one after the other</span></button>'+
+        '<button class="pick" data-plan="one"><b>One section only</b>'+
+          '<span>Either ELA or Mathematics on its own</span></button>'+
+      '</div>'+ paper +
+    '</div></div>';
+  }
+
+  if (plan === "full"){
+    return '<div class="wrap"><div class="card">'+
+      '<h1>The full test</h1>'+
+      '<p class="lede">You will take both sections back to back. When you finish the first '+
+        'section, the second begins straight away.</p>'+
+      '<h2>Which section would you like to start with?</h2>'+
+      '<div class="picks">'+
+        '<button class="pick" data-order="ela,math"><b>English Language Arts '+
+          'first</b><span>50 ELA questions, then 50 Mathematics</span></button>'+
+        '<button class="pick" data-order="math,ela"><b>Mathematics first</b>'+
+          '<span>50 Mathematics questions, then 50 ELA</span></button>'+
+      '</div>'+ paper +
+      '<button class="backlink" id="back">&larr; Back</button>'+
+    '</div></div>';
+  }
+
+  return '<div class="wrap"><div class="card">'+
+    '<h1>One section</h1>'+
+    '<p class="lede">You will take a single section and be scored on it alone.</p>'+
+    '<h2>Which section?</h2>'+
+    '<div class="picks">'+
+      '<button class="pick" data-order="ela"><b>English Language Arts only</b>'+
+        '<span>50 questions &middot; 7 texts</span></button>'+
+      '<button class="pick" data-order="math"><b>Mathematics only</b>'+
+        '<span>50 questions &middot; 12 are not multiple choice</span></button>'+
+    '</div>'+ paper +
+    '<button class="backlink" id="back">&larr; Back</button>'+
+  '</div></div>';
+}
+
+function screenSecIntro(){
+  var it=queue[idx], s=secOf(it.sec);
+  var n=queue.filter(function(q){return q.sec===it.sec;}).length;
+  var first = (idx === 0);
+  var body = it.sec==="ela"
+    ? '<p class="lede">Reading Comprehension comes first: six texts, each shown in a panel '+
+      'beside its questions. Within one text&rsquo;s questions you may move back and forth; '+
+      'submitting the last question of a set closes that set and its text. Revising and '+
+      'Editing follows. You can highlight any text in a passage, a question or an answer '+
+      'choice by selecting it.</p>'
+    : '<p class="lede">Solve each problem and choose the best answer. Twelve questions are '+
+      'not multiple choice: some ask you to select more than one answer, type a number or '+
+      'write an expression, use drop-downs, pick one answer in each row, or place answers '+
+      'into a table. The questions get harder as the section goes on. You can highlight any '+
+      'text in a question or an answer choice by selecting it.</p>';
+  if (!first) body = '<p class="lede"><b>Your first section is complete.</b> It has been '+
+      'recorded, and this second section begins now. You will be scored on both together at '+
+      'the end.</p>' + body;
+  return '<div class="wrap"><div class="card">'+
+    '<div class="eyebrow"><span class="qnum">Section</span></div>'+
+    '<h1>'+s.label+'</h1>'+ body +
+    '<div class="stats"><div class="stat"><div class="k">Questions</div>'+
+      '<div class="v">'+n+'</div></div></div>'+
+    '<div class="actions"><div class="note">Keep recording each answer on paper as you '+
+      'go.</div><div class="btns">'+
+      '<button class="btn btn-primary" id="gosec">Start section</button></div></div>'+
+  '</div></div>';
+}
+
+function choiceRows(it){
+  var rows="";
+  for (var i=0;i<it.choices.length;i++){
+    var c=it.choices[i];
+    rows+='<button class="choice'+(pending===c.l?" on":"")+'" data-letter="'+c.l+'" '+
+          'type="button"><span class="ltr">'+c.l+'</span><span class="ct">'+c.h+'</span></button>';
+  }
+  return '<div class="choices" role="group" aria-label="Answer choices">'+rows+'</div>';
+}
+
+function gridBox(){
+  return '<div class="grid-in">'+
+    '<label for="gridbox">Your answer</label>'+
+    '<input id="gridbox" type="text" inputmode="text" autocomplete="off" spellcheck="false" '+
+      'value="'+(pending==null?"":String(pending).replace(/"/g,"&quot;"))+'">'+
+    '<div class="hint">Numbers only. Use a minus sign for a negative answer and a decimal '+
+      'point if needed.</div></div>';
+}
+
+
+/* ------------------------------------------------------- item bodies by type */
+function strikeBtn(L, on){
+  return '<button class="elim" data-elim="'+L+'" type="button" tabindex="-1" '+
+         'aria-label="'+(on?"Restore":"Cross out")+' choice '+L+'" '+
+         'title="'+(on?"Restore this choice":"Cross this choice out")+'">'+
+         (on?"&#8630;":"&times;")+'</button>';
+}
+function bodyMC(it){
+  var L=letters(it), out="", struck=elim[key(it)]||"";
+  for (var i=0;i<it.opts.length;i++){
+    var c=L.charAt(i), off=struck.indexOf(c)>-1;
+    out+='<div class="crow'+(pending===c?" on":"")+(off?" struck":"")+'">'+
+      '<button class="pickwrap" data-letter="'+c+'" type="button">'+
+      '<span class="ltr">'+c+'</span><span class="ct" data-hl="c:'+key(it)+':'+c+'">'+
+      it.opts[i]+'</span></button>'+
+      strikeBtn(c,off)+'</div>';
+  }
+  return '<div class="choices" role="group" aria-label="Answer choices">'+out+'</div>'+
+    '<p class="elimhint">Use &times; to cross out a choice you have ruled out. Crossing out '+
+    'never submits an answer.</p>'+
+    '<p class="hlhint">Select any text above to highlight it. Click a highlight to remove '+
+    'it.</p>';
+}
+function bodyMulti(it){
+  var L=letters(it), chosen=pending?String(pending).split(""):[], out="";
+  var struck=elim[key(it)]||"";
+  for (var i=0;i<it.opts.length;i++){
+    var c=L.charAt(i), on=chosen.indexOf(c)>-1, off=struck.indexOf(c)>-1;
+    out+='<div class="crow'+(on?" on":"")+(off?" struck":"")+'">'+
+      '<button class="pickwrap" data-check="'+c+'" type="button">'+
+      '<span class="box">'+(on?"&#10003;":"")+'</span>'+
+      '<span class="ltr">'+c+'</span><span class="ct" data-hl="c:'+key(it)+':'+c+'">'+
+      it.opts[i]+'</span></button>'+
+      strikeBtn(c,off)+'</div>';
+  }
+  var full=chosen.length===it.pick;
+  return '<div class="choices" role="group" aria-label="Answer choices">'+out+'</div>'+
+    '<p class="pickmsg'+(full?" full":"")+'">'+
+    (full?"All "+it.pick+" selected.":chosen.length+" of "+it.pick+" selected.")+'</p>'+
+    '<p class="elimhint">Use &times; to cross out a choice you have ruled out.</p>';
+}
+var PAL=["1","2","3","4","5","6","7","8","9","0","+","-","*","/","(",")",
+         "<",">","≤","≥","=",".","x","π"];
+function bodyExpr(it){
+  var keys="";
+  for (var i=0;i<PAL.length;i++) keys+='<button type="button" data-key="'+PAL[i]+'">'+PAL[i]+'</button>';
+  keys+='<button type="button" class="util" data-key="BSP">&#9003;</button>'+
+        '<button type="button" class="util" data-key="CLR">clear</button>';
+  return '<div class="grid-in"><label for="exprbox">Your answer</label>'+
+    '<input id="exprbox" class="exprbox" type="text" autocomplete="off" spellcheck="false" '+
+    'value="'+(pending==null?"":String(pending).replace(/"/g,"&quot;"))+'">'+
+    '<div class="pal">'+keys+'</div>'+
+    '<div class="hint">Type your answer or use the buttons. Write a fraction with a '+
+    'slash (3/4) and a product with * (0.2*3), and you may combine them in one '+
+    'expression. Spaces do not matter.</div></div>';
+}
+function bodyRowTable(it){
+  var sel=parts(pending,it), head='<th></th>';
+  for (var c=0;c<it.cols.length;c++) head+='<th>'+it.cols[c]+'</th>';
+  var rows="";
+  for (var r=0;r<it.rows.length;r++){
+    var cells='<td class="lab">'+it.rows[r]+'</td>';
+    for (var c2=0;c2<it.cols.length;c2++){
+      cells+='<td><button class="rdo'+(sel[r]===String(c2)?" on":"")+'" data-rt="'+r+","+c2+
+             '" type="button" aria-label="'+it.cols[c2]+', row '+(r+1)+'"></button></td>';
+    }
+    rows+='<tr>'+cells+'</tr>';
+  }
+  return '<table class="rt"><tr>'+head+'</tr>'+rows+'</table>';
+}
+function bodyDropdown(it){
+  var sel=parts(pending,it), out="";
+  for (var i=0;i<it.parts.length;i++){
+    var p=it.parts[i], opts='<option value="-">Choose&hellip;</option>';
+    for (var j=0;j<p[1].length;j++){
+      opts+='<option value="'+j+'"'+(sel[i]===String(j)?" selected":"")+'>'+
+            stripTags(p[1][j])+'</option>';
+    }
+    out+='<div class="ddline">'+p[0]+'<select data-dd="'+i+'">'+opts+'</select>'+p[3]+'</div>';
+  }
+  return out;
+}
+function bodyDragTable(it){
+  var placed=parts(pending,it), used={}, k=0;
+  for (var i=0;i<placed.length;i++){ if (placed[i]) used[placed[i]]=true; }
+  var tray="";
+  for (var t=0;t<it.tokens.length;t++){
+    var tk=it.tokens[t];
+    tray+='<button class="tok'+(used[tk]?" used":"")+(held===tk?" held":"")+'" data-tok="'+
+          tk+'" type="button"'+(used[tk]?" disabled":"")+'>'+tk+'</button>';
+  }
+  var head="";
+  for (var c=0;c<it.head.length;c++) head+='<th>'+it.head[c]+'</th>';
+  var rows="";
+  for (var r=0;r<it.body.length;r++){
+    var cells="";
+    for (var c2=0;c2<it.body[r].length;c2++){
+      var v=it.body[r][c2];
+      if (v===null){
+        cells+='<td><button class="dropcell'+(placed[k]?" filled":"")+
+               (held&&!placed[k]?" target":"")+'" data-slot="'+k+'" type="button">'+
+               (placed[k]||"")+'</button></td>';
+        k++;
+      } else cells+='<td>'+v+'</td>';
+    }
+    rows+='<tr>'+cells+'</tr>';
+  }
+  return '<div class="tray">'+tray+'</div>'+
+    '<table class="rt"><tr>'+head+'</tr>'+rows+'</table>'+
+    '<p class="elimhint">Tap an answer, then tap a box to place it. Tap a filled box to take '+
+    'the answer back.</p>';
+}
+function itemBody(it){
+  switch (it.type){
+    case "multi":     return bodyMulti(it);
+    case "num":       return gridBox();
+    case "expr":      return bodyExpr(it);
+    case "rowtable":  return bodyRowTable(it);
+    case "dropdown":  return bodyDropdown(it);
+    case "dragtable": return bodyDragTable(it);
+    default:          return bodyMC(it);
+  }
+}
+var BADGE={multi:"Select more than one", num:"Enter your answer",
+           expr:"Write an expression", rowtable:"One per row",
+           dropdown:"Drop-downs", dragtable:"Place the answers"};
+
+function questionCard(it, isLast){
+  var secItems=queue.filter(function(q){return q.sec===it.sec;});
+  var pos=secItems.indexOf(it)+1;
+  var bd=setBounds(idx), a=bd[0], b=bd[1];
+  var inSet=(b>a), atSetEnd=(idx===b), canBack=(idx>a);
+
+  var note;
+  if (isLast)            note='Last question. The check mark submits your test.';
+  else if (!inSet)       note='Once you move on, this question closes.';
+  else if (atSetEnd)     note='Last question in this set. Submitting closes all '+
+                              (b-a+1)+' and moves you on.';
+  else                   note='You can move back and forth within this set until you '+
+                              'submit the last question.';
+
+  var fwdFinish = isLast || (inSet && atSetEnd);
+  var fwdLabel  = isLast ? 'Finish test'
+                         : (inSet && atSetEnd ? 'Submit this set' : 'Next question');
+
+  return '<div class="eyebrow">'+
+      '<span class="qnum">Question '+pos+' of '+secItems.length+'</span>'+
+      (inSet ? '<span class="setpos">'+(idx-a+1)+' of '+(b-a+1)+' in this set</span>' : '')+
+      (BADGE[it.type] ? '<span class="badge">'+BADGE[it.type]+'</span>' : '')+
+    '</div>'+
+    '<div class="stem" data-hl="s:'+key(it)+'">'+
+      (it.lead ? '<p>'+it.lead+'</p>' : '')+
+      (it.quote ? '<blockquote>'+it.quote+'</blockquote>' : '')+
+      '<p>'+it.stem+'</p>'+
+      (it.fig ? '<div class="qfig">'+DATA.figs[it.fig]+'</div>' : '')+
+    '</div>'+
+    itemBody(it)+
+    '<div class="actions"><div class="note">'+note+'</div>'+
+    '<div class="btns">'+
+      (canBack ? '<button class="arrow back" id="prev" aria-label="Previous question" '+
+                 'title="Previous question">&larr;</button>' : '')+
+      '<button class="arrow'+(fwdFinish?" finish":"")+'" id="next" '+
+      'aria-label="'+fwdLabel+'" title="'+fwdLabel+'">'+
+      (isLast?"&#10003;":"&rarr;")+'</button>'+
+    '</div></div>';
+}
+
+function passagePane(){
+  var cur=queue[idx];
+  var tabs="";
+  DATA.textOrder.forEach(function(tk){
+    var st=textState(tk);
+    if (st==="none") return;
+    var on = (viewText===tk);
+    tabs+='<button class="ptab'+(on?" on":"")+(st==="done"?" done":"")+'" '+
+          'data-tab="'+tk+'"'+(st==="done"?' aria-disabled="true"':'')+'>'+
+          (st==="done"?'<span class="lk">&#128274;</span>':'')+
+          DATA.texts[tk].label+'</button>';
+  });
+  var notice="";
+  if (viewText && cur.text && viewText!==cur.text){
+    notice='<div class="pnotice"><span>You are previewing another text. '+
+      'The current question is about &ldquo;'+DATA.texts[cur.text].label+'&rdquo;.</span>'+
+      '<button id="backcur">Back to current text</button></div>';
+  }
+  var html = viewText ? DATA.texts[viewText].html : '';
+  return '<section class="pane passage"><div class="ptabs">'+tabs+'</div>'+
+         '<div class="pbody" id="pbody">'+notice+
+         '<div data-hl="t:'+viewText+'">'+html+'</div></div></section>';
+}
+
+function screenTest(){
+  var it=queue[idx], isLast=(idx===queue.length-1);
+  if (it.text){
+    return '<div class="wrap wide"><div class="split">'+
+      passagePane()+
+      '<section class="pane qs">'+questionCard(it,isLast)+'</section>'+
+    '</div></div>';
+  }
+  return '<div class="wrap"><div class="card">'+questionCard(it,isLast)+'</div></div>';
+}
+
+/* ---------- results ---------- */
+function scored(){
+  var out={total:{right:0,n:0}, secs:{}, rows:{}, missed:{}};
+  queue.forEach(function(it){
+    var s=it.sec;
+    out.secs[s]=out.secs[s]||{right:0,n:0,blank:0};
+    out.rows[s]=out.rows[s]||"";
+    out.missed[s]=out.missed[s]||[];
+    var a=answers[key(it)], ok=checkAnswer(it, a), has=hasAnswer(it, a);
+    out.secs[s].n++; out.total.n++;
+    if(!has) out.secs[s].blank++;
+    if(ok){ out.secs[s].right++; out.total.right++; } else out.missed[s].push(it.n);
+    var secItems=queue.filter(function(q){return q.sec===s;});
+    var pos=secItems.indexOf(it)+1;
+    out.rows[s]+='<tr><td class="q">'+pos+'</td>'+
+      '<td class="'+(has?(ok?"right":"wrong"):"blank")+'">'+
+        (has?youText(it,a):"&mdash;")+'</td>'+
+      '<td>'+keyText(it)+
+        ((it.type==="mc" && (elim[key(it)]||"").indexOf(letters(it).charAt(it.ai))>-1)
+          ? ' <span class="wrong" title="You crossed out the correct answer">&times;</span>'
+          : '')+'</td>'+
+      '<td>'+(ok?'<span class="right">correct</span>'
+                :'<span class="wrong">'+(has?"incorrect":"blank")+'</span>')+'</td></tr>';
+  });
+  return out;
+}
+
+function resultsText(){
+  var s=scored();
+  var name=(document.getElementById("student")||{}).value||"(no name)";
+  var L=[];
+  L.push("SHSAT Practice - English Language Arts and Mathematics");
+  L.push("Student: "+name);
+  L.push("Date: "+new Date().toLocaleDateString());
+  L.push("Time: "+fmt(elapsed));
+  L.push("");
+  uniqSecs().forEach(function(k){
+    var d=s.secs[k];
+    L.push(secOf(k).label.toUpperCase()+": "+d.right+" / "+d.n+
+           "  ("+Math.round(d.right/d.n*100)+"%)   blank: "+d.blank);
+    L.push("  missed: "+(s.missed[k].length?s.missed[k].join(", "):"none"));
+    L.push("");
+  });
+  if (uniqSecs().length>1)
+    L.push("OVERALL: "+s.total.right+" / "+s.total.n+
+           "  ("+Math.round(s.total.right/s.total.n*100)+"%)");
+  L.push("");
+  uniqSecs().forEach(function(k){
+    L.push("--- "+secOf(k).label+" ---");
+    L.push("Q    Yours   Key");
+    var secItems=queue.filter(function(q){return q.sec===k;});
+    secItems.forEach(function(it,i){
+      var a=answers[key(it)]||"-";
+      var pad=function(v,n){ v=String(v); while(v.length<n) v+=" "; return v; };
+      L.push(pad(i+1,5)+pad(a,8)+pad(it.answer,6)+(same(a,it.answer)?"correct":"INCORRECT"));
+    });
+    L.push("");
+  });
+  return L.join("\n");
+}
+
+function copyResults(){
+  var txt=resultsText();
+  var done=function(){ var n=document.getElementById("mailnote");
+    if(n) n.textContent="Results copied. Paste them wherever you keep them."; };
+  function fallback(){
+    try{
+      var ta=document.createElement("textarea");
+      ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand("copy"); document.body.removeChild(ta); done();
+    }catch(e){
+      var n=document.getElementById("mailnote");
+      if(n) n.textContent="Copying was blocked here. Download this file and open it in your "+
+          "browser, then try again.";
+    }
+  }
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText)
+      navigator.clipboard.writeText(txt).then(done, fallback);
+    else fallback();
+  }catch(e){ fallback(); }
+}
+function printSheet(){
+  var name=(document.getElementById("student")||{}).value||"";
+  var slot=document.getElementById("phname");
+  if(slot) slot.textContent = name ? name : "—";
+  try{ window.print(); }catch(e){}
+}
+
+function screenResults(){
+  var s=scored(), secs=uniqSecs();
+  var d=new Date();
+  var head='<div class="printhead"><div class="ph-title">SHSAT Practice &mdash; ELA &amp; Mathematics</div>'+
+    '<div class="ph-meta">Score report &nbsp;&middot;&nbsp; Name: <span id="phname">&mdash;'+
+    '</span> &nbsp;&middot;&nbsp; '+d.toLocaleDateString()+'</div></div>';
+  var stats='<div class="stats">';
+  secs.forEach(function(k){
+    var v=s.secs[k];
+    stats+='<div class="stat"><div class="k">'+secOf(k).label+'</div><div class="v">'+
+      v.right+' / '+v.n+'</div></div>';
+  });
+  if (secs.length>1)
+    stats+='<div class="stat"><div class="k">Overall</div><div class="v">'+
+      s.total.right+' / '+s.total.n+'</div></div>';
+  stats+='<div class="stat"><div class="k">Total time</div><div class="v">'+fmt(elapsed)+
+    '</div></div></div>';
+  var body="";
+  secs.forEach(function(k){
+    body+='<h2>'+secOf(k).label+' &mdash; questions missed</h2>'+
+      '<p class="missed">'+(s.missed[k].length?s.missed[k].join(', ')
+        :'None &mdash; a perfect section.')+'</p>'+
+      '<h2>'+secOf(k).label+' &mdash; question by question</h2>'+
+      '<table class="sheet"><thead><tr><th>Q</th><th>Yours</th><th>Key</th><th>Result</th>'+
+      '</tr></thead><tbody>'+s.rows[k]+'</tbody></table>';
+  });
+  return '<div class="wrap"><div class="card">'+ head +
+    '<h1 class="noprint">Test complete</h1>'+
+    '<p class="lede noprint">Your test has been scored. Add a name below if you want it on '+
+      'to send or print the report.</p>'+
+    '<div class="namefield noprint"><label for="student">Student name</label>'+
+      '<input id="student" type="text" autocomplete="off" placeholder="Optional"></div>'+
+
+    stats + body +
+    '<div class="actions noprint"><div class="note" id="mailnote">Copy the results to '+
+      'paste them somewhere, or save the whole report as a PDF.</div>'+
+    '<div class="btns">'+
+      '<button class="btn btn-ghost" id="restart">Start over</button>'+
+      '<button class="btn btn-ghost" id="copy">Copy results</button>'+
+      '<button class="btn btn-ghost" id="print">Save as PDF</button>'+
+
+    '</div></div>'+
+  '</div></div>';
+}
+
+/* ---------- render ---------- */
+function render(){
+  // remember where the reader was before the DOM is thrown away
+  var pageY = (clickY != null) ? clickY
+            : (window.pageYOffset || document.documentElement.scrollTop || 0);
+  clickY = null;
+  var pane  = document.getElementById("pbody");
+  var paneY = pane ? pane.scrollTop : 0;
+
+  if (mode==="start")        app.innerHTML=screenStart();
+  else if (mode==="secintro")app.innerHTML=screenSecIntro();
+  else if (mode==="test")    app.innerHTML=screenTest();
+  else                       app.innerHTML=screenResults();
+  paintChrome(); wire(); hlPaintAll(); hlHideBar();
+
+  if (mode!=="test"){ window.scrollTo(0,0); return; }
+  // selecting or crossing out an answer re-renders in place: put the view back
+  window.scrollTo(0, pageY);
+  var pane2 = document.getElementById("pbody");
+  if (pane2 && !paneReset) pane2.scrollTop = paneY;
+  paneReset = false;
+}
+
+function wire(){
+  var $=function(i){ return document.getElementById(i); };
+
+  var pl=app.querySelectorAll("[data-plan]");
+  for (var i=0;i<pl.length;i++){
+    pl[i].onclick=function(){ plan=this.getAttribute("data-plan"); render(); };
+  }
+  var od=app.querySelectorAll("[data-order]");
+  for (var o=0;o<od.length;o++){
+    od[o].onclick=function(){ begin(this.getAttribute("data-order").split(",")); };
+  }
+  var bk=$("back");
+  if (bk) bk.onclick=function(){ plan=null; render(); };
+  var go=$("gosec");
+  if (go) go.onclick=function(){ mode="test"; syncView(); render(); };
+
+  var cs=app.querySelectorAll("[data-letter]");
+  for (var j=0;j<cs.length;j++){
+    cs[j].onclick=function(){ pending=this.getAttribute("data-letter"); render(); };
+  }
+  var ms=app.querySelectorAll("[data-check]");
+  for (var m=0;m<ms.length;m++){
+    ms[m].onclick=function(){
+      var it=queue[idx], L=this.getAttribute("data-check");
+      var cur=pending?String(pending).split(""):[], at=cur.indexOf(L);
+      if (at>-1) cur.splice(at,1); else if (cur.length<it.pick) cur.push(L);
+      pending=cur.sort().join(""); render();
+    };
+  }
+  var xs=app.querySelectorAll("[data-elim]");
+  for (var e=0;e<xs.length;e++){
+    xs[e].onclick=function(ev){
+      ev.stopPropagation();
+      var it=queue[idx], L=this.getAttribute("data-elim"), k2=key(it);
+      var cur=elim[k2]||"", at=cur.indexOf(L);
+      elim[k2]= at>-1 ? cur.slice(0,at)+cur.slice(at+1) : cur+L;
+      save(); render();
+    };
+  }
+  var rts=app.querySelectorAll("[data-rt]");
+  for (var r=0;r<rts.length;r++){
+    rts[r].onclick=function(){
+      var it=queue[idx], rc=this.getAttribute("data-rt").split(",");
+      var cur=parts(pending,it); cur[+rc[0]]=rc[1];
+      pending=cur.join(""); render();
+    };
+  }
+  var dds=app.querySelectorAll("[data-dd]");
+  for (var d=0;d<dds.length;d++){
+    dds[d].onchange=function(){
+      var it=queue[idx], cur=parts(pending,it);
+      cur[+this.getAttribute("data-dd")]=this.value;
+      pending=cur.join(""); save();
+    };
+  }
+  var toks=app.querySelectorAll("[data-tok]");
+  for (var t=0;t<toks.length;t++){
+    toks[t].onclick=function(){
+      var tk=this.getAttribute("data-tok");
+      held=(held===tk)?null:tk; render();
+    };
+  }
+  var slots=app.querySelectorAll("[data-slot]");
+  for (var s2=0;s2<slots.length;s2++){
+    slots[s2].onclick=function(){
+      var it=queue[idx], i=+this.getAttribute("data-slot"), cur=parts(pending,it);
+      if (cur[i]){ held=null; cur[i]=""; }
+      else if (held){ cur[i]=held; held=null; }
+      pending=cur.join("|"); render();
+    };
+  }
+  var ex=$("exprbox");
+  if (ex){
+    ex.oninput=function(){ pending=this.value; };
+    ex.onkeydown=function(ev){ if (ev.key==="Enter"){ ev.preventDefault(); advance(); } };
+    var pk=app.querySelectorAll("[data-key]");
+    for (var k3=0;k3<pk.length;k3++){
+      pk[k3].onclick=function(){
+        var v=this.getAttribute("data-key"), box=$("exprbox");
+        if (v==="CLR") box.value="";
+        else if (v==="BSP") box.value=box.value.slice(0,-1);
+        else {
+          var a=box.selectionStart, b=box.selectionEnd;
+          box.value=box.value.slice(0,a)+v+box.value.slice(b);
+          box.setSelectionRange(a+v.length,a+v.length);
+        }
+        pending=box.value; box.focus();
+      };
+    }
+    ex.focus();
+  }
+  var gb=$("gridbox");
+  if (gb){
+    gb.oninput=function(){ pending=this.value; };
+    gb.onkeydown=function(e){
+      if (e.key==="Enter"){ e.preventDefault(); advance(); }
+      if (e.key==="ArrowLeft" && !this.value){ e.preventDefault(); goBack(); }
+    };
+    gb.focus();
+  }
+  var nx=$("next"); if (nx) nx.onclick=advance;
+  var pv=$("prev"); if (pv) pv.onclick=goBack;
+
+  var tabs=app.querySelectorAll(".ptab[data-tab]");
+  for (var t=0;t<tabs.length;t++){
+    tabs[t].onclick=function(){
+      var tk=this.getAttribute("data-tab");
+      if (textState(tk)==="done"){
+        ask("That text is closed",
+            "You have already finished the questions for “"+DATA.texts[tk].label+
+            "”, so it cannot be reopened.", "OK", function(){});
+        return;
+      }
+      viewText=tk; paneReset=true; render();
+    };
+  }
+  var bc=$("backcur");
+  if (bc) bc.onclick=function(){ viewText=queue[idx].text; render(); };
+
+  var pr=$("print"); if (pr) pr.onclick=printSheet;
+  var cp=$("copy"); if (cp) cp.onclick=copyResults;
+  var st=$("student");
+  if (st) st.oninput=function(){
+    var s=$("phname"); if(s) s.textContent=this.value?this.value:"—"; };
+  var rs=$("restart");
+  if (rs) rs.onclick=function(){
+    ask("Start over?","This clears every answer and returns you to the start screen.",
+        "Start over", function(){
+      wipe(); queue=[]; idx=0; answers={}; elim={}; pending=null; held=null;
+      elapsed=0; viewText=null; plan=null; mode="start"; stopTicker(); render();
+    });
+  };
+}
+
+function syncView(){
+  var it=queue[idx];
+  viewText = it && it.text ? it.text : null;
+}
+
+function begin(secKeys){
+  wipe();
+  queue=[]; answers={}; idx=0; elapsed=0; pending=null;
+  secKeys.forEach(function(k){
+    var s=secOf(k);
+    if (s) s.items.forEach(function(it){ queue.push(it); });
+  });
+  elim={}; held=null;
+  secStart=0; mode="secintro"; syncView(); startTicker(); render();
+}
+
+function step(to){
+  var prevSec=queue[idx].sec;
+  idx=to;
+  pending = answers[key(queue[idx])] || null;
+  var prevText = viewText;
+  syncView();
+  paneReset = (viewText !== prevText);
+  save();
+  if (queue[idx].sec!==prevSec) mode="secintro";
+  render();
+  if (mode==="test") window.scrollTo(0,0);
+}
+
+function goBack(){
+  var bd=setBounds(idx);
+  if (idx<=bd[0]) return;                       // never leave the current set
+  if (pending) answers[key(queue[idx])]=pending;
+  step(idx-1);
+}
+
+function advance(){
+  var it=queue[idx];
+  if (pending != null && pending !== "" && pending !== blankFor(it))
+    answers[key(it)]=pending;
+  held=null;
+  var bd=setBounds(idx), a=bd[0], b=bd[1];
+
+  if (idx===queue.length-1){
+    ask("Finish the test?",
+        "You will see your full score report. You cannot return to the questions.",
+        "Finish test", finish);
+    return;
+  }
+  // inside a set, with questions still ahead of us: just move on, nothing locks
+  if (idx<b){ step(idx+1); return; }
+
+  // at the end of a multi-question set: confirm, because this closes the set
+  if (b>a){
+    var blank=setBlanks(a,b), n=b-a+1;
+    ask("Submit this set?",
+        (blank
+          ? "You have left "+blank+" of these "+n+" questions blank. "
+          : "All "+n+" questions are answered. ")+
+        "Submitting closes the set and its text. You cannot come back to it.",
+        "Submit set", function(){ step(b+1); });
+    return;
+  }
+  step(idx+1);
+}
+
+function finish(){ stopTicker(); mode="results"; save(); render(); }
+
+
+/* ============================================================ highlighter */
+var HL = {};              /* HL[region] = [[start,end], ...] over the region's text */
+var hlBar = null;
+var hlDrag = null;
+
+function hlRegionOf(n){
+  while (n){ if (n.nodeType===1 && n.getAttribute && n.getAttribute("data-hl")!=null) return n;
+             n = n.parentNode; }
+  return null;
+}
+function hlTextNodes(root){
+  var out=[], w=document.createTreeWalker(root, 4, null, false), n;
+  while ((n = w.nextNode())) out.push(n);
+  return out;
+}
+function hlOffset(root, node, off){
+  if (node.nodeType===1){                       /* selection landed on an element */
+    var kids = hlTextNodes(node);
+    if (!kids.length) return -1;
+    node = off >= node.childNodes.length ? kids[kids.length-1] : kids[0];
+    off  = off >= node.nodeValue.length ? node.nodeValue.length : 0;
+  }
+  var ns = hlTextNodes(root), t = 0;
+  for (var i=0;i<ns.length;i++){
+    if (ns[i] === node) return t + off;
+    t += ns[i].nodeValue.length;
+  }
+  return -1;
+}
+function hlMerge(list){
+  list.sort(function(a,b){ return a[0]-b[0] || a[1]-b[1]; });
+  var out=[];
+  for (var i=0;i<list.length;i++){
+    var last = out[out.length-1];
+    if (last && list[i][0] <= last[1]) last[1] = Math.max(last[1], list[i][1]);
+    else out.push([list[i][0], list[i][1]]);
+  }
+  return out;
+}
+function hlPaint(root){
+  var reg = root.getAttribute("data-hl"), rs = HL[reg];
+  if (!rs || !rs.length) return;
+  var ns = hlTextNodes(root), pos = 0;
+  for (var i=0;i<ns.length;i++){
+    var node = ns[i], txt = node.nodeValue, s = pos, e = pos + txt.length;
+    pos = e;
+    if (!txt.length || !node.parentNode) continue;
+    var cuts = [];
+    for (var j=0;j<rs.length;j++){
+      var a = Math.max(rs[j][0], s), b = Math.min(rs[j][1], e);
+      if (b > a) cuts.push([a-s, b-s, j]);
+    }
+    if (!cuts.length) continue;
+    var frag = document.createDocumentFragment(), last = 0;
+    for (var k=0;k<cuts.length;k++){
+      if (cuts[k][0] > last) frag.appendChild(document.createTextNode(txt.slice(last, cuts[k][0])));
+      var mk = document.createElement("mark");
+      mk.className = "hl";
+      mk.setAttribute("data-hlr", cuts[k][2]);
+      mk.setAttribute("title", "Click to remove this highlight");
+      mk.appendChild(document.createTextNode(txt.slice(cuts[k][0], cuts[k][1])));
+      frag.appendChild(mk);
+      last = cuts[k][1];
+    }
+    if (last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+    node.parentNode.replaceChild(frag, node);
+  }
+}
+function hlPaintAll(){
+  var rs = document.querySelectorAll("[data-hl]");
+  for (var i=0;i<rs.length;i++) hlPaint(rs[i]);
+}
+function hlHideBar(){
+  if (hlBar && hlBar.parentNode) hlBar.parentNode.removeChild(hlBar);
+  hlBar = null;
+}
+function hlShowBar(rect, label, fn){
+  hlHideBar();
+  hlBar = document.createElement("div");
+  hlBar.className = "hlbar";
+  var b = document.createElement("button");
+  b.type = "button";
+  b.appendChild(document.createTextNode(label));
+  b.onmousedown = function(ev){ ev.preventDefault(); };
+  b.onclick = function(ev){ ev.preventDefault(); ev.stopPropagation(); fn(); hlHideBar(); };
+  hlBar.appendChild(b);
+  document.body.appendChild(hlBar);
+  var sy = window.pageYOffset || document.documentElement.scrollTop || 0;
+  var sx = window.pageXOffset || document.documentElement.scrollLeft || 0;
+  var top = rect.top + sy - hlBar.offsetHeight - 8;
+  if (top < sy + 4) top = rect.bottom + sy + 8;
+  var left = rect.left + sx + rect.width/2 - hlBar.offsetWidth/2;
+  var max = (document.documentElement.clientWidth || 900) - hlBar.offsetWidth - 6;
+  hlBar.style.top  = Math.round(top) + "px";
+  hlBar.style.left = Math.round(Math.max(6, Math.min(left, max))) + "px";
+}
+function hlFromSelection(sel){
+  var rg = sel.getRangeAt(0);
+  var root = hlRegionOf(rg.startContainer);
+  if (!root || root !== hlRegionOf(rg.endContainer)){ hlHideBar(); return; }
+  var s = hlOffset(root, rg.startContainer, rg.startOffset);
+  var e = hlOffset(root, rg.endContainer, rg.endOffset);
+  if (s < 0 || e < 0) { hlHideBar(); return; }
+  var lo = Math.min(s,e), hi = Math.max(s,e);
+  if (hi - lo < 2){ hlHideBar(); return; }
+  var reg = root.getAttribute("data-hl");
+  hlShowBar(rg.getBoundingClientRect(), "Highlight", function(){
+    HL[reg] = hlMerge((HL[reg] || []).concat([[lo, hi]]));
+    if (sel.removeAllRanges) sel.removeAllRanges();
+    save(); render();
+  });
+}
+function hlRemoveBar(m){
+  var root = hlRegionOf(m);
+  if (!root) { hlHideBar(); return; }
+  var reg = root.getAttribute("data-hl"), j = parseInt(m.getAttribute("data-hlr"), 10);
+  hlShowBar(m.getBoundingClientRect(), "Remove highlight", function(){
+    if (HL[reg]) { HL[reg].splice(j, 1); if (!HL[reg].length) delete HL[reg]; }
+    save(); render();
+  });
+}
+
+/* mouseup and click both end the same gesture, and click always comes second, so the
+   two share one debounced handler rather than fighting over the popup */
+var hlMark = null, hlPend = null;
+function hlGesture(){
+  hlPend = null;
+  var sel = window.getSelection();
+  if (sel && !sel.isCollapsed && sel.rangeCount){ hlMark = null; hlFromSelection(sel); return; }
+  if (hlMark){ var m = hlMark; hlMark = null; hlRemoveBar(m); return; }
+  hlHideBar();
+}
+function hlSchedule(){
+  if (hlPend) clearTimeout(hlPend);
+  hlPend = setTimeout(hlGesture, 0);
+}
+function hlOnBar(t){ return t && t.parentNode && t.parentNode.className === "hlbar"; }
+
+document.addEventListener("mouseup",  function(ev){ if (!hlOnBar(ev.target)) hlSchedule(); }, false);
+document.addEventListener("touchend", function(ev){ if (!hlOnBar(ev.target)) hlSchedule(); }, false);
+
+/* a click on a highlight offers to remove it, and never reaches the choice beneath */
+document.addEventListener("click", function(ev){
+  var m = ev.target;
+  while (m && m.nodeType===1 && m.tagName !== "MARK"){
+    if (m.getAttribute && m.getAttribute("data-hl") != null){ m = null; break; }
+    m = m.parentNode;
+  }
+  if (!m || m.nodeType !== 1 || m.tagName !== "MARK") return;
+  ev.preventDefault(); ev.stopPropagation();
+  hlMark = m;
+  hlSchedule();
+}, true);
+
+/* dragging across an answer choice selects text; it must not also pick that choice */
+document.addEventListener("mousedown", function(e){ hlDrag = [e.clientX, e.clientY]; }, true);
+document.addEventListener("click", function(e){
+  if (!hlDrag) return;
+  var dx = e.clientX - hlDrag[0], dy = e.clientY - hlDrag[1];
+  hlDrag = null;
+  if (Math.abs(dx) > 4 || Math.abs(dy) > 4){
+    var sel = window.getSelection();
+    if (sel && !sel.isCollapsed){ e.preventDefault(); e.stopPropagation(); }
+  }
+}, true);
+
+render();
+})();
+</script>
+</body>
+</html>
